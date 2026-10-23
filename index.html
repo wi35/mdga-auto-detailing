@@ -32,7 +32,7 @@
 <style>
 :root{
   color-scheme:dark; /* diseño solo oscuro, a propósito */
-  --bg:#000; --ink:#f5f5f7; --mute:rgba(245,245,247,.62); --accent:#2f6bff; --accent2:#9cc0ff;
+  --bg:#000; --ink:#f5f5f7; --mute:rgba(245,245,247,.8); --accent:#2f6bff; --accent2:#9cc0ff;
   --glass:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -41,6 +41,8 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 /* 100lvh: en el móvil el lienzo no cambia de tamaño cuando la barra del navegador aparece o se esconde */
 canvas#gl{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100lvh;display:block;z-index:0}
 .vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.75))}
+/* el coche es decoración: pasada la portada se oscurece para que manden los textos (--dim lo pone el script) */
+.dim{position:fixed;inset:0;pointer-events:none;z-index:1;background:#000;opacity:calc(var(--dim,0) * .45)}
 
 /* Barra superior estilo iOS */
 nav{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:28px;padding:10px 12px 10px 22px;border-radius:999px;
@@ -52,7 +54,7 @@ nav .links{display:flex;gap:22px;font-size:13px}
 nav a{color:var(--mute);text-decoration:none;transition:color .3s}
 nav a:hover{color:var(--ink)}
 html{-webkit-tap-highlight-color:transparent}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 18px;border-radius:999px;font-weight:600;font-size:13px;color:#fff!important;background:linear-gradient(135deg,#6f9dff,#1f5cff);text-decoration:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 18px;border:0;border-radius:999px;font:inherit;font-weight:600;font-size:13px;cursor:pointer;color:#fff!important;background:linear-gradient(135deg,#6f9dff,#1f5cff);text-decoration:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
 .btn:hover{transform:scale(1.04);box-shadow:0 8px 30px rgba(47,107,255,.45)}
 
 main{position:relative;z-index:2}
@@ -65,30 +67,61 @@ section.center{justify-content:center;text-align:center}
 section.hero{align-items:flex-start;padding-top:max(84px,9vh)}
 /* hueco donde se pinta el logo 3D (lo dibuja el canvas de fondo) */
 .hero .brand{width:min(640px,94vw,80vh);aspect-ratio:1920/770;margin:0 auto 4px}
-.hero .claim{font-family:Michroma,sans-serif;font-size:clamp(12px,1.2vw,15px);letter-spacing:.32em;text-transform:uppercase;color:#dfe6f2}
-.hero p{margin-top:14px;color:var(--mute);font-size:clamp(15px,1.4vw,18px);max-width:520px;margin-inline:auto}
+.hero .claim{font-family:Michroma,sans-serif;font-size:clamp(13px,1.4vw,17px);letter-spacing:.32em;text-transform:uppercase;color:#fff;text-shadow:0 0 18px rgba(47,107,255,.6)}
+.hero p{margin-top:14px;color:var(--ink);font-size:clamp(16px,1.6vw,20px);max-width:560px;margin-inline:auto;text-shadow:0 2px 12px #000}
+.chips{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px auto 0;max-width:640px}
+.chips li{padding:8px 14px;border-radius:999px;font-size:13px;font-weight:500;background:rgba(47,107,255,.14);border:1px solid rgba(156,192,255,.3);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hero .ctas{margin-top:22px}
+.hero .btn{font-size:15px;padding:12px 22px}
+/* entrada de la portada cuando termina de cargar (clase .go en <html>) */
+.hero .claim,.hero p,.chips li,.hero .ctas,.hint{opacity:0;transform:translateY(18px)}
+.go .hero .claim,.go .hero p,.go .chips li,.go .hero .ctas,.go .hint{animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+.go .hero .claim{animation-delay:.5s}.go .hero p{animation-delay:.65s}.go .hero .ctas{animation-delay:1.25s}.go .hint{animation-delay:1.5s}
+.go .chips li:nth-child(1){animation-delay:.8s}.go .chips li:nth-child(2){animation-delay:.92s}.go .chips li:nth-child(3){animation-delay:1.04s}
+@keyframes rise{to{opacity:1;transform:none}}
 .hint{margin-top:28px;font-size:12px;letter-spacing:.3em;color:var(--mute);text-transform:uppercase}
 .hint i{display:block;width:1px;height:46px;margin:14px auto 0;background:linear-gradient(var(--accent),transparent);animation:drip 2s ease-in-out infinite}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
 /* Tarjetas de cristal */
-.card{width:min(460px,100%);padding:34px;border-radius:28px;background:linear-gradient(160deg,rgba(40,40,44,.55),rgba(10,10,12,.55));
+.card{position:relative;z-index:1;width:min(460px,100%);padding:34px;border-radius:28px;background:linear-gradient(160deg,rgba(34,34,40,.74),rgba(8,8,10,.74));
   border:1px solid var(--line);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
   box-shadow:0 30px 80px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12);
   opacity:0;transform:translateY(40px) scale(.97);filter:blur(8px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1),filter 1s;will-change:transform,opacity}
 .in .card,.in.card{opacity:1;transform:none;filter:none}
-.tag{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent2)}
-.card h2{font-size:clamp(28px,3vw,40px);letter-spacing:-.03em;margin:10px 0 12px;font-weight:700}
-.card h3{font-size:15px;font-weight:600;margin:18px 0 6px}
+/* marco de luz que gira alrededor de la tarjeta */
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+.card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--a),transparent 0 62%,rgba(47,107,255,.9) 76%,#cfe0ff 82%,rgba(47,107,255,.9) 88%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  animation:spin 6s linear infinite paused}
+.in .card::before{animation-play-state:running}
+@keyframes spin{to{--a:360deg}}
+/* etiqueta con brillo que la recorre */
+.tag{font-size:12px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:var(--accent2);
+  background:linear-gradient(100deg,var(--accent2) 40%,#fff 50%,var(--accent2) 60%) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 4s linear infinite}
+@keyframes shine{from{background-position:100% 0}to{background-position:-50% 0}}
+.card h2{font-size:clamp(30px,3.3vw,44px);letter-spacing:-.03em;margin:10px 0 12px;font-weight:700;line-height:1.08}
+/* el título entra palabra a palabra (el script las separa) */
+.card h2 .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em}
+.card h2 .w>span{display:inline-block;transform:translateY(110%);transition:transform .8s cubic-bezier(.2,.8,.2,1) calc(var(--i) * 70ms + .2s)}
+.in .card h2 .w>span{transform:none}
+.card h3{font-size:16px;font-weight:600;margin:18px 0 6px;color:var(--accent2)}
 .card p{color:var(--mute);line-height:1.55;font-size:15px}
-.card ul{list-style:none;margin:20px 0;display:grid;gap:9px;font-size:14px}
-.card ul.two{grid-template-columns:1fr 1fr;column-gap:16px;font-size:13px}
-.card li{display:flex;gap:10px;align-items:baseline}
+.card ul{list-style:none;margin:20px 0;display:grid;gap:9px;font-size:15px}
+.card ul.two{grid-template-columns:1fr 1fr;column-gap:16px;font-size:14px}
+/* la lista aparece en cascada */
+.card li{display:flex;gap:10px;align-items:baseline;opacity:0;transform:translateX(-14px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i) * 55ms + .45s)}
+.in .card li{opacity:1;transform:none}
+/* palabra gigante de fondo que se desliza con el scroll (--p lo pone el script) */
+section{position:relative;overflow-x:clip}
+.bigword{position:absolute;left:50%;top:50%;z-index:0;white-space:nowrap;pointer-events:none;font-family:"Russo One",Inter,sans-serif;font-size:clamp(90px,17vw,280px);line-height:1;
+  color:transparent;-webkit-text-stroke:1.5px rgba(156,192,255,.28);transform:translate(calc(-50% + (.5 - var(--p,.5)) * 60vw),-50%)}
 .card li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);transform:translateY(-2px)}
 .prices{padding-top:16px;border-top:1px solid var(--line);display:grid;gap:8px}
 .prices small{color:var(--mute);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
 .prices div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;color:var(--mute)}
-.prices b{font-size:22px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.prices b{font-size:24px;font-weight:700;color:#fff;letter-spacing:-.01em;font-variant-numeric:tabular-nums;text-shadow:0 0 16px rgba(47,107,255,.55)}
 .note{margin-top:14px;font-size:12px!important}
 
 /* Medidor de limpieza */
@@ -101,7 +134,7 @@ section.hero{align-items:flex-start;padding-top:max(84px,9vh)}
 .contact p{color:var(--mute);margin:16px auto 0;max-width:470px}
 .contact .pillars{margin:22px 0 28px;font-family:Michroma,sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#dfe6f2}
 .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn.ghost{background:rgba(255,255,255,.08);border:1px solid var(--line)}
+.btn.ghost{background:rgba(12,12,16,.62);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .mail{display:inline-block;margin-top:18px;color:var(--accent2);font-size:14px;text-decoration:none}
 .social{display:flex;justify-content:center;gap:12px;margin-top:18px}
 .social a{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--line);color:var(--ink);transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s}
@@ -109,6 +142,23 @@ section.hero{align-items:flex-start;padding-top:max(84px,9vh)}
 .social svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .social .dot{fill:currentColor;stroke:none}
 footer a{color:var(--mute)}
+
+/* Pestaña "Our Work": galería de trabajos hechos (de momento, huecos vacíos) */
+#work{margin:auto;width:min(1100px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:28px;border:1px solid var(--line);border-radius:28px;color:var(--ink);
+  background:linear-gradient(160deg,rgba(30,30,36,.92),rgba(6,6,8,.94));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:auto}
+#work[open]{animation:pop .55s cubic-bezier(.2,.8,.2,1)}
+#work::backdrop{background:rgba(0,0,0,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.96)}}
+body:has(#work[open]){overflow:hidden}
+.work-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+.work-head h2{font-size:clamp(26px,3vw,40px);letter-spacing:-.03em;margin-top:8px}
+.work-head p{color:var(--mute);margin-top:6px}
+.close{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--glass);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
+.close:hover,.close:focus-visible{border-color:var(--accent)}
+.work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.shot{position:relative;aspect-ratio:4/3;border-radius:18px;overflow:hidden;border:1px dashed rgba(156,192,255,.3);display:grid;place-items:center;color:var(--mute);font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+  background:linear-gradient(110deg,rgba(255,255,255,.03) 30%,rgba(156,192,255,.1) 50%,rgba(255,255,255,.03) 70%) 0 0/300% 100%;animation:shine 3s linear infinite}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;color:var(--mute);font-size:12px}
 
 #loader{position:fixed;inset:0;z-index:20;background:#000;display:grid;place-items:center;transition:opacity 1s}
@@ -138,21 +188,30 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
   .prices{gap:4px;padding-top:12px}
   .prices div{font-size:13px}
   .prices b{font-size:18px}
-  .hero p{font-size:15px}
+  .hero p{font-size:16px}
+  .chips li{font-size:12px;padding:7px 12px}
+  .bigword{top:30%;font-size:26vw}
+  #work{padding:20px}
+  .work-grid{grid-template-columns:1fr 1fr;gap:10px}
   .meter{bottom:calc(12px + env(safe-area-inset-bottom,0px));padding:8px 12px}
   .meter .bar{width:80px}
 }
-@media (prefers-reduced-motion:reduce){.card{transition:none}.hint i{animation:none}}
+@media (prefers-reduced-motion:reduce){
+  .card,.card li,.card h2 .w>span{transition:none}
+  .hint i,.tag,.shot,.card::before,#work[open]{animation:none}
+  .hero .claim,.hero p,.chips li,.hero .ctas,.hint{opacity:1;transform:none;animation:none!important}
+}
 </style>
 </head>
 <body>
 <canvas id="gl"></canvas>
+<div class="dim"></div>
 <div class="vignette"></div>
 <div id="loader"><div><i></i></div></div>
 
 <nav>
   <a class="logo" href="#"><b>MDGA</b><span>AUTO DETAILING</span></a>
-  <div class="links"><a href="#basic">Basic</a><a href="#premium">Premium</a><a href="#ceramic">Ceramic Coating</a></div>
+  <div class="links"><a href="#basic">Basic</a><a href="#premium">Premium</a><a href="#ceramic">Ceramic Coating</a><a href="#work" data-open-work>Our Work</a></div>
   <a class="btn" href="#book">Get a Quote</a>
 </nav>
 
@@ -162,11 +221,16 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
       <h1 class="brand" id="brandSlot" aria-label="MDGA Auto Detailing"></h1>
       <div class="claim">Luxury Care in Every Detail</div>
       <p>Premium mobile detailing for everyday, luxury and exotic vehicles. We come to you.</p>
+      <ul class="chips"><li>Mobile Service · We Come to You</li><li>Luxury &amp; Exotic Cars</li><li>Paint Correction &amp; Ceramic Coating</li></ul>
+      <div class="ctas">
+        <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Get a Free Quote</a>
+        <button class="btn ghost" type="button" data-open-work>See Our Work</button>
+      </div>
       <div class="hint">Scroll<i></i></div>
     </div>
   </section>
 
-  <section id="basic" class="right"><div class="card">
+  <section id="basic" class="right"><div class="bigword" aria-hidden="true">BASIC</div><div class="card">
     <div class="tag">Package 01</div><h2>Basic Detailing</h2>
     <h3>Exterior Cleaning</h3>
     <ul class="two"><li>Exterior hand wash</li><li>Wheels and rims cleaning</li><li>Tire shine application</li><li>Microfiber towel drying</li><li>Exterior windows cleaning</li></ul>
@@ -177,17 +241,17 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
     </div>
   </div></section>
 
-  <section id="premium"><div class="card">
+  <section id="premium"><div class="bigword" aria-hidden="true">EXTERIOR</div><div class="card">
     <div class="tag">Package 02 · Premium</div><h2>Premium Exterior Detailing</h2>
     <ul class="two"><li>Premium foam exterior wash</li><li>Deep cleaning of rims and tires</li><li>Fender well cleaning</li><li>Door jamb cleaning</li><li>Bug and grime removal</li><li>Professional microfiber drying</li><li>Tire shine and protection</li><li>Wax or paint sealant application</li></ul>
   </div></section>
 
-  <section id="interior" class="right"><div class="card">
+  <section id="interior" class="right"><div class="bigword" aria-hidden="true">INTERIOR</div><div class="card">
     <div class="tag">Package 02 · Premium</div><h2>Premium Interior Detailing</h2>
     <ul class="two"><li>Deep vacuuming of the entire interior</li><li>Carpet and floor mat cleaning</li><li>Leather or fabric seat cleaning</li><li>Center console and dashboard cleaning</li><li>Door panels and compartments</li><li>A/C vent cleaning</li><li>Interior glass cleaning</li><li>Leather conditioning</li><li>Light odor removal</li></ul>
   </div></section>
 
-  <section id="finishing"><div class="card">
+  <section id="finishing"><div class="bigword" aria-hidden="true">FINISH</div><div class="card">
     <div class="tag">Package 02 · Premium</div><h2>Luxury Finishing Touches</h2>
     <ul class="two"><li>UV protection on interior plastics</li><li>Paint gloss and professional finish</li><li>Exterior trim treatment</li><li>Hard-to-reach detail cleaning</li><li>Final quality inspection</li><li>Premium fragrance</li></ul>
     <div class="prices"><small>Premium package · starting at</small>
@@ -195,7 +259,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
     </div>
   </div></section>
 
-  <section id="ceramic" class="right"><div class="card">
+  <section id="ceramic" class="right"><div class="bigword" aria-hidden="true">CERAMIC</div><div class="card">
     <div class="tag">Package 03</div><h2>Paint Correction &amp; Ceramic Coating</h2>
     <p>Paint correction removes swirl marks, light scratches, oxidation and paint imperfections, restoring depth, clarity and an exceptional glossy finish.</p>
     <p style="margin-top:10px">Ceramic coating adds a long-lasting protective layer against contaminants, UV exposure and everyday dirt. Its hydrophobic finish makes your vehicle easier to clean and maintain.</p>
@@ -205,7 +269,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
     <p class="note">Prices may vary depending on vehicle size, paint condition, level of correction required and the ceramic coating protection selected.</p>
   </div></section>
 
-  <section id="book" class="contact center">
+  <section id="book" class="contact center"><div class="bigword" aria-hidden="true">BOOK NOW</div>
     <div class="card" style="width:min(600px,100%)">
       <div class="tag">We Come to You</div>
       <h2>Your Vehicle Deserves the Best.</h2>
@@ -214,6 +278,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
       <div class="ctas">
         <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Get a Quote on WhatsApp</a>
         <a class="btn ghost" href="tel:+15616284360">Call (561) 628-4360</a>
+        <button class="btn ghost" type="button" data-open-work>See Our Work</button>
       </div>
       <a class="mail" href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a>
       <div class="social">
@@ -229,6 +294,22 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
     </div>
   </section>
 </main>
+
+<!-- Pestaña de trabajos hechos. Para añadir una foto: <figure class="shot"><img src="fotos/..." alt="..."></figure> -->
+<dialog id="work" aria-labelledby="workTitle">
+  <div class="work-head">
+    <div>
+      <div class="tag">Our Work</div>
+      <h2 id="workTitle">Real Results from Real MDGA Jobs</h2>
+      <p>Before &amp; after photos of vehicles we have detailed.</p>
+    </div>
+    <button class="close" type="button" aria-label="Close">×</button>
+  </div>
+  <div class="work-grid">
+    <figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure>
+    <figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure>
+  </div>
+</dialog>
 <footer>© MDGA Auto Detailing · Luxury Care in Every Detail.<br><a href="tel:+15616284360">(561) 628-4360</a> · <a href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a><br>
 <a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener">YouTube</a> · <a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener">Google</a><br><small>3D car model "Ferrari 458 Italia" by vicent091036 (CC BY 4.0) · Studio lighting from Poly Haven (CC0)</small></footer>
 
@@ -238,13 +319,54 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
 // Red de seguridad (script normal, funciona aunque el 3D falle): las tarjetas aparecen al hacer scroll, y si el
 // coche no ha cargado en 30 s o hay un error antes, se quita la pantalla de carga y la web se lee sin el 3D.
 (() => {
-  const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('in')), { threshold: 0.25 });
-  document.querySelectorAll('main section').forEach((s) => io.observe(s));
+  const root = document.documentElement, still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sections = [...document.querySelectorAll('main section')];
+
+  // títulos palabra a palabra y listas en cascada (los retrasos van en --i)
+  document.querySelectorAll('.card h2').forEach((h) => {
+    h.innerHTML = h.innerHTML.split(' ').map((w, i) => `<span class="w" style="--i:${i}"><span>${w}</span></span>`).join(' ');
+  });
+  document.querySelectorAll('.card ul').forEach((ul) => [...ul.children].forEach((li, i) => li.style.setProperty('--i', i)));
+
+  // los precios cuentan desde 0 la primera vez que se ven
+  const countUp = (el) => {
+    const to = +el.textContent.replace(/\D/g, ''), t0 = performance.now();
+    const step = (t) => { const k = Math.min(1, (t - t0) / 1100); el.textContent = '$' + Math.round(to * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting || e.target.classList.contains('in')) return;
+    e.target.classList.add('in');
+    if (!still) e.target.querySelectorAll('.prices b').forEach(countUp);
+  }), { threshold: 0.25 });
+  sections.forEach((s) => io.observe(s));
+
+  // al hacer scroll: se oscurece el fondo tras la portada y las palabras gigantes se deslizan
+  let queued = false;
+  const onScroll = () => {
+    queued = false;
+    root.style.setProperty('--dim', Math.min(1, scrollY / (innerHeight * 0.8)).toFixed(3));
+    for (const s of sections) {
+      const r = s.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) continue;
+      s.style.setProperty('--p', ((innerHeight - r.top) / (innerHeight + r.height)).toFixed(3));
+    }
+  };
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
+
+  // pestaña "Our Work" (también se abre con el enlace terminado en #work)
+  const work = document.getElementById('work');
+  document.querySelectorAll('[data-open-work]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); work.showModal(); }));
+  work.querySelector('.close').addEventListener('click', () => work.close());
+  work.addEventListener('click', (e) => { if (e.target === work) work.close(); }); // tocar fuera la cierra
+  if (location.hash === '#work') work.showModal();
+
   const no3d = () => {
     const l = document.getElementById('loader');
     if (l.classList.contains('done')) return;
     l.classList.add('done');
-    document.documentElement.classList.add('no3d');
+    root.classList.add('no3d', 'go');
   };
   setTimeout(no3d, 30000);
   addEventListener('error', no3d, true); // en captura: también salta si falla la descarga de la librería 3D
@@ -492,12 +614,13 @@ gltf ??= await new GLTFLoader().parseAsync(await b64Bytes('ferrari-glb.txt', pro
   ready = true;
   document.getElementById('loader').classList.add('done');
   document.documentElement.classList.remove('no3d'); // por si la red de seguridad saltó antes en una conexión lenta
+  document.documentElement.classList.add('go');       // arranca la entrada de los textos de la portada
 }
 
 // ---------- Guion del scroll: una parada por sección ----------
 // cam = posición de cámara, look = a dónde mira, ext/int = suciedad, glass = opacidad de los cristales
 const K = [
-  { cam: [6.6, 2.5, -5.6], look: [0, 1.75, 0], ext: 1, int: 1, glass: 0.55 },      // portada: sucio, coche bajo el logo
+  { cam: [6.6, 2.5, -5.6], look: [0, 2.3, 0], ext: 1, int: 1, glass: 0.55 },       // portada: sucio, coche abajo (deja sitio a los textos)
   { cam: [-5.8, 1.1, -2.2], look: [0, 0.5, 0.2], ext: 0.6, int: 1, glass: 0.55 },  // basic: se va el polvo
   { cam: [-4.4, 2.8, 4.6], look: [0, 0.4, 0], ext: 0, int: 1, glass: 0.55 },       // premium exterior: limpio por fuera
   { cam: [0.95, 1.85, 1.0], look: [-0.1, 0.55, -0.45], ext: 0, int: 0.35, glass: 0 },   // premium interior: zoom a la cabina, casi limpio
