@@ -385,15 +385,19 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { createLogo } from './logo3d.js';
 
 const canvas = document.getElementById('gl');
 const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
+// ?video = modo grabación (video.mjs): resolución completa, máxima calidad y arranque manual con __start()
+const VIDEO = new URLSearchParams(location.search).has('video');
+const light = mobile && !VIDEO; // ahorros de rendimiento solo para móviles de verdad
 let W = canvas.clientWidth, H = canvas.clientHeight;
-let pr = Math.min(devicePixelRatio, mobile ? 1.5 : 1.75); // baja sola si el móvil no llega a 45 fps (ver frame)
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' }); // el suavizado va en el composer
+let pr = VIDEO ? devicePixelRatio : Math.min(devicePixelRatio, mobile ? 1.5 : 1.75); // baja sola si el móvil no llega a 45 fps (ver frame)
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: VIDEO }); // el suavizado va en el composer
 renderer.setPixelRatio(pr);
 renderer.setSize(W, H, false);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -427,6 +431,7 @@ const loadStudio = () => b64Bytes('studio-hdr.txt').then((buf) => {
   const hdr = new THREE.DataTexture(d.data, d.width, d.height, THREE.RGBAFormat, d.type);
   Object.assign(hdr, { colorSpace: THREE.LinearSRGBColorSpace, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, flipY: true, mapping: THREE.EquirectangularReflectionMapping, needsUpdate: true });
   scene.environment = pmrem.fromEquirectangular(hdr).texture;
+  window.__studio = true;
   hdr.dispose();
 });
 
@@ -437,7 +442,7 @@ scene.add(camera); // el logo de la portada va colgado de la cámara
 const key = new THREE.SpotLight(0xfff1dc, 60, 20, 0.6, 0.8);
 key.position.set(0, 7, 0);
 key.castShadow = true;
-key.shadow.mapSize.setScalar(mobile ? 1024 : 2048);
+key.shadow.mapSize.setScalar(VIDEO ? 4096 : light ? 1024 : 2048);
 renderer.shadowMap.autoUpdate = false; // coche y foco no se mueven: la sombra se calcula una sola vez
 key.shadow.camera.near = 3; key.shadow.camera.far = 12;
 key.shadow.bias = -0.0002; key.shadow.normalBias = 0.02;
@@ -453,14 +458,14 @@ floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 scene.add(floor);
 
-// Suavizado de bordes: la escena se dibuja en un búfer propio (por el brillo), así que el antialias del lienzo no sirve;
-// el MSAA x4 va en ese búfer. En los móviles es barato (GPU por bloques).
-const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(W * pr, H * pr, { type: THREE.HalfFloatType, samples: 4 }));
-composer.setSize(W, H);
+// Suavizado de bordes: la escena se dibuja en un búfer propio (por el brillo), así que el antialias del lienzo no sirve.
+// Va un SMAA al final (tras OutputPass). El MSAA en el búfer dejaba el logo sin dibujar en pantallas verticales.
+const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(W / 2, H / 2), 0.25, 0.5, 0.88);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
+composer.addPass(new SMAAPass(W * pr, H * pr));
 
 // ---------- Suciedad y espuma: ruido 3D en el shader; la espuma cubre, se escurre y al irse deja la pintura limpia ----------
 const extDirt = { value: 1 }, intDirt = { value: 1 }, extFoam = { value: 0 }, intFoam = { value: 0 }, uTime = { value: 0 };
@@ -470,7 +475,7 @@ float h3(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y
 float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
  return mix(mix(mix(h3(i),h3(i+vec3(1,0,0)),f.x),mix(h3(i+vec3(0,1,0)),h3(i+vec3(1,1,0)),f.x),f.y),
             mix(mix(h3(i+vec3(0,0,1)),h3(i+vec3(1,0,1)),f.x),mix(h3(i+vec3(0,1,1)),h3(i+vec3(1,1,1)),f.x),f.y),f.z);}
-float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<${mobile ? 3 : 4};i++){s+=a*n3(p);p*=2.03;a*=.5;}return s;}
+float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<${light ? 3 : 4};i++){s+=a*n3(p);p*=2.03;a*=.5;}return s;}
 `;
 function dirty(mat, u, foamU, mud) {
   mat.onBeforeCompile = (s) => {
@@ -620,7 +625,7 @@ gltf ??= await new GLTFLoader().parseAsync(await b64Bytes('ferrari-glb.txt', pro
   ready = true;
   document.getElementById('loader').classList.add('done');
   document.documentElement.classList.remove('no3d'); // por si la red de seguridad saltó antes en una conexión lenta
-  document.documentElement.classList.add('go');       // arranca la entrada de los textos de la portada
+  if (!VIDEO) document.documentElement.classList.add('go'); // arranca la entrada de los textos de la portada
 }
 
 // ---------- Guion del scroll: una parada por sección ----------
@@ -653,7 +658,15 @@ readScroll(); cur = target;
 const slot = document.getElementById('brandSlot'), logoHolder = new THREE.Group(), Z = new THREE.Vector3(0, 0, 1);
 camera.add(logoHolder);
 let logo, logoT0;
-createLogo(renderer).then((l) => { logo = l; logoHolder.add(l.group); });
+createLogo(renderer).then((l) => { logo = l; logoHolder.add(l.group); window.__logo = true; });
+// grabación: la entrada de los textos y del logo empieza justo con el primer fotograma del vídeo
+window.__start = () => { document.documentElement.classList.add('go'); logoT0 = time; };
+if (VIDEO) window.__dbg = () => {
+  const m = logo.group.children.find((c) => c.isGroup), wp = m.getWorldPosition(new THREE.Vector3()), np = wp.clone().project(camera);
+  return { vis: logoHolder.visible, s: logoHolder.scale.x, ndc: np.toArray(), WH: [W, H, pr], aspect: camera.aspect, view: camera.view,
+    vp: renderer.getViewport(new THREE.Vector4()).toArray(), db: renderer.getDrawingBufferSize(new THREE.Vector2()).toArray(),
+    rt: [composer.renderTarget1.width, composer.renderTarget1.height], comp: [composer._width, composer._height, composer._pixelRatio] };
+};
 
 const camPos = new THREE.Vector3(), look = new THREE.Vector3(), offA = new THREE.Vector3(), offB = new THREE.Vector3(), tmp = new THREE.Vector3();
 const pctEl = document.getElementById('pct'), barEl = document.getElementById('bar');
@@ -754,7 +767,7 @@ function frame(now) {
   slowT += dt; slowN++;
   if (slowT > 1) {
     // (los 3 primeros segundos no cuentan: ahí se compilan los shaders)
-    if (time > 3 && slowT / slowN > 1 / 45 && pr > 1 && !document.hidden) { pr = Math.max(1, pr - 0.2); resize(true); }
+    if (!VIDEO && time > 3 && slowT / slowN > 1 / 45 && pr > 1 && !document.hidden) { pr = Math.max(1, pr - 0.2); resize(true); }
     slowT = slowN = 0;
   }
   requestAnimationFrame(frame);
