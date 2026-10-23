@@ -393,7 +393,7 @@ const canvas = document.getElementById('gl');
 const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
 let W = canvas.clientWidth, H = canvas.clientHeight;
 let pr = Math.min(devicePixelRatio, mobile ? 1.5 : 1.75); // baja sola si el móvil no llega a 45 fps (ver frame)
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, powerPreference: 'high-performance' });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' }); // el suavizado va en el composer
 renderer.setPixelRatio(pr);
 renderer.setSize(W, H, false);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -453,7 +453,10 @@ floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 scene.add(floor);
 
-const composer = new EffectComposer(renderer);
+// Suavizado de bordes: la escena se dibuja en un búfer propio (por el brillo), así que el antialias del lienzo no sirve;
+// el MSAA x4 va en ese búfer. En los móviles es barato (GPU por bloques).
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(W * pr, H * pr, { type: THREE.HalfFloatType, samples: 4 }));
+composer.setSize(W, H);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(W / 2, H / 2), 0.25, 0.5, 0.88);
 composer.addPass(bloom);
@@ -478,7 +481,10 @@ function dirty(mat, u, foamU, mud) {
       .replace('#include <color_fragment>', `#include <color_fragment>
         float dMask = 0.0, fMask = 0.0, wet = 0.0, hgt = 0.0;
         if (uDirt + uFoam > 0.001) { // coche limpio: no se calcula ruido (las secciones finales van mucho más ligeras)
-        float big = fbm(vDPos * 2.2), fine = fbm(vDPos * 11.0 + 7.0), grain = n3(vDPos * 60.0);
+        // el detalle más fino se apaga cuando es más pequeño que un píxel (si no, parpadea y hace dientes de sierra)
+        float px = length(fwidth(vDPos));
+        float aaG = clamp(1.5 - px * 60.0, 0.0, 1.0), aaB = clamp(1.5 - px * 140.0, 0.0, 1.0), aaB2 = clamp(1.5 - px * 55.0, 0.0, 1.0);
+        float big = fbm(vDPos * 2.2), fine = fbm(vDPos * 11.0 + 7.0), grain = mix(.5, n3(vDPos * 60.0), aaG);
         float up = clamp(vDNrm.y, 0.0, 1.0);            // capó y techo acumulan polvo
         float low = clamp(1.0 - vDPos.y / 1.15, 0.0, 1.0);  // el barro sube desde abajo
         float drip = fbm(vec3(vDPos.x * 9.0, vDPos.y * 1.2, vDPos.z * 9.0)); // chorretones verticales
@@ -496,7 +502,7 @@ function dirty(mat, u, foamU, mud) {
         float fl2 = fl + uFoam * .75 - .5 + up * .18;
         fMask = smoothstep(.45, .6, fl2) * step(.001, uFoam);
         float fThick = smoothstep(.6, .85, fl2);          // donde es fina deja ver la suciedad de debajo
-        float bub = n3(vDPos * 140.0), bub2 = n3(vDPos * 55.0 + 3.0);
+        float bub = mix(.5, n3(vDPos * 140.0), aaB), bub2 = mix(.5, n3(vDPos * 55.0 + 3.0), aaB2);
         vec3 foamCol = vec3(.9, .94, 1.0) * (.7 + .18 * bub + .12 * bub2);
         diffuseColor.rgb = mix(diffuseColor.rgb, foamCol, fMask * (.5 + .5 * fThick));
         hgt = dMask * (fine * .6 + grain * .4) * .0016 + fMask * (bub * .6 + bub2 * .4) * (.001 + .002 * fThick);
