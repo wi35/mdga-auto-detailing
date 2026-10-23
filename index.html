@@ -23,7 +23,8 @@
 {"@context":"https://schema.org","@type":"AutoWash","name":"MDGA Auto Detailing","slogan":"Luxury Care in Every Detail",
  "description":"Premium mobile auto detailing, paint correction and ceramic coating. We come to you.",
  "url":"https://wi35.github.io/mdga-auto-detailing/","image":"https://wi35.github.io/mdga-auto-detailing/og-image.jpg",
- "telephone":"+1-561-628-4360","email":"servicesmdga@gmail.com","priceRange":"$50 - $900"}
+ "telephone":"+1-561-628-4360","email":"servicesmdga@gmail.com","priceRange":"$50 - $900",
+ "sameAs":["https://www.instagram.com/mdgaautodetailing","https://www.tiktok.com/@mdga.services","https://www.youtube.com/@mdgaautodetailing","https://share.google/FrebNPnN8X6JFbi1k"]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Michroma&family=Russo+One&display=swap" rel="stylesheet">
@@ -101,6 +102,11 @@ section.hero{align-items:flex-start;padding-top:max(84px,9vh)}
 .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .btn.ghost{background:rgba(255,255,255,.08);border:1px solid var(--line)}
 .mail{display:inline-block;margin-top:18px;color:var(--accent2);font-size:14px;text-decoration:none}
+.social{display:flex;justify-content:center;gap:12px;margin-top:18px}
+.social a{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--line);color:var(--ink);transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s}
+.social a:hover,.social a:focus-visible{transform:scale(1.08);border-color:var(--accent);box-shadow:0 0 18px rgba(47,107,255,.45)}
+.social svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.social .dot{fill:currentColor;stroke:none}
 footer a{color:var(--mute)}
 footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;color:var(--mute);font-size:12px}
 
@@ -209,10 +215,21 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
         <a class="btn ghost" href="tel:+15616284360">Call (561) 628-4360</a>
       </div>
       <a class="mail" href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a>
+      <div class="social">
+        <a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r=".9" class="dot"/></svg></a>
+        <a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok">
+          <svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.4 2.6 2.2 4.3 5 4.5"/></svg></a>
+        <a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
+          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" class="dot"/></svg></a>
+        <a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener" aria-label="Google" title="Google: reviews &amp; location">
+          <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 12h-7"/></svg></a>
+      </div>
     </div>
   </section>
 </main>
-<footer>© MDGA Auto Detailing · Luxury Care in Every Detail.<br><a href="tel:+15616284360">(561) 628-4360</a> · <a href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a><br><small>3D car model "Ferrari 458 Italia" by vicent091036 (CC BY 4.0) · Studio lighting from Poly Haven (CC0)</small></footer>
+<footer>© MDGA Auto Detailing · Luxury Care in Every Detail.<br><a href="tel:+15616284360">(561) 628-4360</a> · <a href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a><br>
+<a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener">YouTube</a> · <a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener">Google</a><br><small>3D car model "Ferrari 458 Italia" by vicent091036 (CC BY 4.0) · Studio lighting from Poly Haven (CC0)</small></footer>
 
 <div class="meter"><span>Dirt</span><div class="bar"><i id="bar"></i></div><span id="pct">100%</span></div>
 
