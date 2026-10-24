@@ -40,9 +40,9 @@ html{background:var(--bg);scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 /* 100lvh: en el móvil el lienzo no cambia de tamaño cuando la barra del navegador aparece o se esconde */
 canvas#gl{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100lvh;display:block;z-index:0}
-.vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.75))}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(110% 85% at 50% 45%,transparent 45%,rgba(0,0,0,.92))}
 /* el coche es decoración: pasada la portada se oscurece para que manden los textos (--dim lo pone el script) */
-.dim{position:fixed;inset:0;pointer-events:none;z-index:1;background:#000;opacity:calc(.18 + var(--dim,0) * .5)}
+.dim{position:fixed;inset:0;pointer-events:none;z-index:1;background:#000;opacity:calc(.38 + var(--dim,0) * .45)}
 
 /* Barra superior estilo iOS */
 nav{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:28px;padding:10px 12px 10px 22px;border-radius:999px;
@@ -58,15 +58,20 @@ html{-webkit-tap-highlight-color:transparent}
 .btn:hover{transform:scale(1.04);box-shadow:0 8px 30px rgba(47,107,255,.45)}
 
 main{position:relative;z-index:2}
-section{min-height:140vh;display:flex;align-items:center;padding:0 6vw;pointer-events:none}
+section{min-height:100vh;display:flex;align-items:center;padding:0 6vw;pointer-events:none}
 section>*{pointer-events:auto}
 section.right{justify-content:flex-end}
 section.center{justify-content:center;text-align:center}
 
 /* Portada: el logo arriba y el coche debajo */
 section.hero{align-items:flex-start;padding-top:max(84px,9vh)}
-/* hueco donde se pinta el logo 3D (lo dibuja el canvas de fondo) */
-.hero .brand{width:min(640px,94vw,80vh);aspect-ratio:1920/770;margin:0 auto 4px}
+.hero .brand{width:min(640px,94vw,80vh);aspect-ratio:1920/770;margin:0 auto 4px;opacity:0}
+/* el logo es un vídeo en bucle (logo-video.mjs) dibujado con supermuestreo: bordes limpios en cualquier pantalla.
+   Los bordes se funden con el fondo y al bajar se inclina hacia atrás (--hp lo pone el script) */
+.hero .brand video{display:block;width:100%;height:100%;object-fit:cover;
+  -webkit-mask-image:radial-gradient(ellipse 72% 72% at 50% 50%,#000 62%,transparent);mask-image:radial-gradient(ellipse 72% 72% at 50% 50%,#000 62%,transparent);
+  transform:perspective(900px) rotateX(calc(var(--hp,0) * 38deg)) scale(calc(1 - var(--hp,0) * .12));transform-origin:50% 100%}
+.go .hero .brand{animation:rise 1.2s cubic-bezier(.2,.8,.2,1) .15s forwards}
 .hero .claim{font-family:Michroma,sans-serif;font-size:clamp(15px,1.9vw,23px);letter-spacing:.32em;text-transform:uppercase;color:#fff;text-shadow:0 0 18px rgba(47,107,255,.6)}
 .hero p{margin-top:16px;color:var(--ink);font-size:clamp(19px,2.1vw,27px);line-height:1.35;max-width:720px;margin-inline:auto;text-shadow:0 2px 12px #000}
 .chips{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px auto 0;max-width:640px}
@@ -165,9 +170,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
 #loader div{width:140px;height:2px;background:rgba(255,255,255,.1);overflow:hidden;border-radius:2px}
 #loader i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
 #loader.done{opacity:0;pointer-events:none}
-/* sin 3D (ver la red de seguridad al final): el logo pasa a texto y se esconde el medidor */
-.no3d .brand{display:grid;place-items:center;font-family:"Russo One",Inter,sans-serif;font-size:clamp(56px,16vw,120px);color:var(--accent)}
-.no3d .brand::before{content:"MDGA"}
+/* sin 3D (ver la red de seguridad al final): se esconde el medidor */
 .no3d .meter{display:none}
 .why{display:none;margin-top:10px!important;font-size:11px!important;color:rgba(255,255,255,.35)!important}
 .no3d .why{display:block}
@@ -177,7 +180,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
   nav{gap:14px;padding:8px 8px 8px 16px}
   /* tarjetas compactas abajo; el coche ocupa la mitad de arriba (ver setViewOffset en el script) */
   /* con la sección centrada en pantalla, la tarjeta acaba justo encima del medidor, mida lo que mida */
-  section,section.right{align-items:flex-end;justify-content:center;padding:0 16px calc(20vh + 64px)}
+  section,section.right{align-items:flex-end;justify-content:center;padding:0 16px 64px}
   section.hero{align-items:flex-start;padding:84px 16px 0}
   section.contact{align-items:center;padding-bottom:0}
   .card{padding:20px 20px 18px;border-radius:22px;background:linear-gradient(160deg,rgba(28,28,32,.8),rgba(8,8,10,.8));
@@ -204,7 +207,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
 @media (prefers-reduced-motion:reduce){
   .card,.card li,.card h2 .w>span{transition:none}
   .hint i,.tag,.shot,.card::before,#work[open]{animation:none}
-  .hero .claim,.hero p,.chips li,.hero .ctas,.hint{opacity:1;transform:none;animation:none!important}
+  .hero .brand,.hero .claim,.hero p,.chips li,.hero .ctas,.hint{opacity:1;transform:none;animation:none!important}
 }
 </style>
 </head>
@@ -223,7 +226,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
 <main>
   <section class="hero center">
     <div>
-      <h1 class="brand" id="brandSlot" aria-label="MDGA Auto Detailing"></h1>
+      <h1 class="brand" aria-label="MDGA Auto Detailing"><video src="logo-loop.mp4" poster="logo-poster.jpg" autoplay muted loop playsinline aria-hidden="true"></video></h1>
       <div class="claim">Luxury Care in Every Detail</div>
       <p>Premium mobile detailing for everyday, luxury and exotic vehicles. We come to you.</p>
       <ul class="chips"><li>Mobile Service · We Come to You</li><li>Luxury &amp; Exotic Cars</li><li>Paint Correction &amp; Ceramic Coating</li></ul>
@@ -352,6 +355,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
   const onScroll = () => {
     queued = false;
     root.style.setProperty('--dim', Math.min(1, scrollY / (innerHeight * 0.8)).toFixed(3));
+    root.style.setProperty('--hp', Math.min(1, scrollY / innerHeight).toFixed(3)); // inclinación del logo
     for (const s of sections) {
       const r = s.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight) continue;
@@ -400,7 +404,6 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import { createLogo } from './logo3d.js';
 
 const canvas = document.getElementById('gl');
 const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
@@ -448,7 +451,7 @@ const loadStudio = () => b64Bytes('studio-hdr.txt').then((buf) => {
 });
 
 const camera = new THREE.PerspectiveCamera(36, W / H, 0.05, 60);
-scene.add(camera); // el logo de la portada va colgado de la cámara
+scene.add(camera);
 
 // Luz de estudio: un foco cenital cálido que proyecta la sombra y un contraluz frío para los reflejos
 const key = new THREE.SpotLight(0xfff1dc, 60, 20, 0.6, 0.8);
@@ -471,7 +474,7 @@ floor.receiveShadow = true;
 scene.add(floor);
 
 // Suavizado de bordes: la escena se dibuja en un búfer propio (por el brillo), así que el antialias del lienzo no sirve.
-// Va un SMAA al final (tras OutputPass). El MSAA en el búfer dejaba el logo sin dibujar en pantallas verticales.
+// Va un SMAA al final (tras OutputPass). (El MSAA en ese búfer fallaba en pantallas verticales.)
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(W / 2, H / 2), 0.25, 0.5, 0.88);
@@ -676,20 +679,10 @@ addEventListener('scroll', readScroll, { passive: true });
 readScroll(); cur = target;
 
 
-const slot = document.getElementById('brandSlot'), logoHolder = new THREE.Group(), Z = new THREE.Vector3(0, 0, 1);
-camera.add(logoHolder);
-let logo, logoT0;
-createLogo(renderer).then((l) => { logo = l; logoHolder.add(l.group); window.__logo = true; });
-// grabación: la entrada de los textos y del logo empieza justo con el primer fotograma del vídeo
-window.__start = () => { document.documentElement.classList.add('go'); logoT0 = time; };
-if (VIDEO) window.__dbg = () => {
-  const m = logo.group.children.find((c) => c.isGroup), wp = m.getWorldPosition(new THREE.Vector3()), np = wp.clone().project(camera);
-  return { vis: logoHolder.visible, s: logoHolder.scale.x, ndc: np.toArray(), WH: [W, H, pr], aspect: camera.aspect, view: camera.view,
-    vp: renderer.getViewport(new THREE.Vector4()).toArray(), db: renderer.getDrawingBufferSize(new THREE.Vector2()).toArray(),
-    rt: [composer.renderTarget1.width, composer.renderTarget1.height], comp: [composer._width, composer._height, composer._pixelRatio] };
-};
+// grabación: la entrada de los textos y el vídeo del logo empiezan justo con el primer fotograma
+window.__start = () => { document.documentElement.classList.add('go'); window.__resetVideos?.(); };
 
-const camPos = new THREE.Vector3(), look = new THREE.Vector3(), tmp = new THREE.Vector3();
+const camPos = new THREE.Vector3(), look = new THREE.Vector3();
 const pctEl = document.getElementById('pct'), barEl = document.getElementById('bar');
 let lastExt = 1, lastInt = 1, time = 0, last = performance.now(), shownPct = -1;
 
@@ -753,26 +746,7 @@ function frame(now) {
   const shine = Math.max(0, 1 - Math.max(0, Math.abs(cur - 4.5) - 0.5) * 1.5); // finishing y cerámico
   sweep.intensity = shine * 5;
   sweep.position.set(Math.sin(time * 0.8) * 2.4, 2.0, Math.cos(time * 0.8) * 1.2 - 0.4);
-  // logo 3D de la portada: sigue al hueco del HTML, así sube con la página al hacer scroll
-  let heroVis = 0;
-  if (logo) {
-    const r = slot.getBoundingClientRect();
-    logoHolder.visible = ready && r.bottom > -40;
-    if (logoHolder.visible) {
-      logoT0 ??= time;
-      const D = 5, k = 2 * D * Math.tan(camera.fov * Math.PI / 360) / H; // unidades 3D por píxel a la distancia D
-      const s = r.width * k / 8; // el hueco equivale a 1600 px del logo = 8 unidades
-      heroVis = Math.min(1, Math.max(0, r.bottom / (r.height + 200)));
-      logoHolder.position.set((r.left + r.width / 2 - W / 2) * k, (H / 2 - r.top - r.height / 2 - oy) * k - 0.105 * s, -D);
-      logoHolder.scale.setScalar(s);
-      // de frente a la cámara (sin deformación por perspectiva) y, al bajar, se inclina hacia atrás
-      logoHolder.quaternion.setFromUnitVectors(Z, tmp.copy(logoHolder.position).negate().normalize());
-      logoHolder.rotateX(-(1 - heroVis) * 0.8);
-      logo.update(time - logoT0);
-    }
-  }
-  bloom.strength = 0.2 + shine * 0.08 + heroVis * (mobile ? 0.2 : 0.35);
-  bloom.radius = lerp(0.5, 0.25, heroVis);
+  bloom.strength = 0.2 + shine * 0.08;
 
   const pct = Math.round((ext * 0.6 + int * 0.4) * 100); // el exterior pesa más que el interior
   if (pct !== shownPct) { shownPct = pct; pctEl.textContent = pct + '%'; barEl.style.width = pct + '%'; }

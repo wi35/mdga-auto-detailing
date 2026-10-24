@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 
 export const P = (x, y, z = 0) => new THREE.Vector3((x - 800) / 200, (450 - y) / 200, z);
+export const LOOP = 10; // segundos: la onda (3 vueltas), el brillo (2) y el balanceo (1) caben exactos
 
 // Estudio propio para los reflejos del cromo: paneles blancos y azules sobre negro
 function studioEnv(renderer) {
@@ -66,7 +67,7 @@ export async function createLogo(renderer, base = '') {
     fragmentShader: `uniform vec3 c; uniform float uTime, uReveal, uPulse; varying float u;
       void main(){
         float on = smoothstep(u, u + .08, uReveal * 1.1);
-        float wave = exp(-pow((u - fract(uTime * .28)) * 7., 2.)) * uPulse;
+        float wave = exp(-pow((u - fract(uTime * .3)) * 7., 2.)) * uPulse;
         gl_FragColor = vec4(c * pow(sin(3.14159 * u), ${power.toFixed(2)}) * on * (.85 + 1.4 * wave), 1.); }`,
     blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
   });
@@ -142,9 +143,11 @@ export async function createLogo(renderer, base = '') {
       glint.position.set(-5 + k * 10, -0.4, 1.4);
       glint.distance = 5 * ws;
       glint.intensity = Math.sin(k * Math.PI) * 14 * ws * ws;
-      group.rotation.y = Math.sin(t * 0.5) * 0.07;
-      group.rotation.x = Math.sin(t * 0.37) * 0.035;
-      flares.forEach((sp, i) => sp.scale.setScalar(sp.userData.s * Math.min(1, Math.max(0, t - 1.2 - i * 0.15) * 2) * (0.75 + 0.3 * Math.sin(t * 2.2 + i * 1.7))));
+      // todo se repite exactamente cada LOOP segundos (así el vídeo del logo empalma sin corte)
+      const w = (2 * Math.PI) / LOOP;
+      group.rotation.y = Math.sin(t * w) * 0.07;
+      group.rotation.x = Math.sin(t * w + 1.3) * 0.035;
+      flares.forEach((sp, i) => sp.scale.setScalar(sp.userData.s * Math.min(1, Math.max(0, t - 1.2 - i * 0.15) * 2) * (0.75 + 0.3 * Math.sin(t * w * 3 + i * 1.7))));
     }
   };
 }
