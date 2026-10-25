@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MDGA Auto Detailing</title>
 <meta name="description" content="Premium mobile auto detailing, paint correction and ceramic coating. Luxury Care in Every Detail. We come to you.">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0a0f1a">
 <meta name="google" content="notranslate"><!-- siempre en inglés: que Chrome no la traduzca sola -->
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
@@ -28,290 +28,385 @@
  "sameAs":["https://www.instagram.com/mdgaautodetailing","https://www.tiktok.com/@mdga.services","https://www.youtube.com/@mdgaautodetailing","https://share.google/FrebNPnN8X6JFbi1k"]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Michroma&family=Russo+One&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=Michroma&family=Russo+One&display=swap" rel="stylesheet">
 <style>
+/* Web de negocio clásica: azul marino casi negro, títulos Saira con una palabra en azul, fotos grandes redondeadas.
+   Diseño solo oscuro, a propósito. */
 :root{
-  color-scheme:dark; /* diseño solo oscuro, a propósito */
-  --bg:#000; --ink:#f5f5f7; --mute:rgba(245,245,247,.8); --accent:#2f6bff; --accent2:#9cc0ff;
-  --glass:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
+  color-scheme:dark;
+  --bg:#0a0f1a; --bg2:#0d1422; --card:#111a2b; --card2:#152036;
+  --ink:#eef2f8; --mute:#a9b4c7; --line:rgba(148,180,255,.13);
+  --accent:#2f7bff; --accent2:#7db6ff; --glow:rgba(47,123,255,.45);
+  --display:"Saira",Manrope,system-ui,sans-serif; --body:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:22px; --wrap:1200px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg);scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-/* 100lvh: en el móvil el lienzo no cambia de tamaño cuando la barra del navegador aparece o se esconde */
-canvas#gl{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100lvh;display:block;z-index:0}
-.vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(110% 85% at 50% 45%,transparent 45%,rgba(0,0,0,.92))}
-/* el coche es decoración: pasada la portada se oscurece para que manden los textos (--dim lo pone el script) */
-.dim{position:fixed;inset:0;pointer-events:none;z-index:1;background:#000;opacity:calc(.38 + var(--dim,0) * .45)}
+html{background:var(--bg);scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent2);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+section{padding-block:clamp(64px,9vw,112px)}
+.alt{background:linear-gradient(180deg,var(--bg2),var(--bg))}
 
-/* Barra superior estilo iOS */
-nav{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:28px;padding:10px 12px 10px 22px;border-radius:999px;
-  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);width:max-content;max-width:calc(100vw - 32px)}
-.logo{display:flex;align-items:baseline;gap:8px;text-decoration:none}
-.logo b{font-family:"Russo One",sans-serif;font-weight:400;font-size:19px;letter-spacing:.06em;background:linear-gradient(180deg,#cfe0ff,#3d7bff 55%,#1446d8);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 8px rgba(47,107,255,.55))}
-.logo span{font-family:Michroma,sans-serif;font-size:8px;letter-spacing:.24em;color:#c9d0da}
-nav .links{display:flex;gap:22px;font-size:13px}
-nav a{color:var(--mute);text-decoration:none;transition:color .3s}
+/* tipografía */
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent2)}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;line-height:1.04;text-wrap:balance}
+h1{font-size:clamp(44px,7vw,88px)}
+h2{font-size:clamp(34px,5vw,60px);margin-top:12px}
+h3{font-size:clamp(26px,3vw,36px)}
+.hl{background:linear-gradient(100deg,var(--accent2),var(--accent) 45%,#9fd0ff 55%,var(--accent) 65%,var(--accent2)) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{from{background-position:100% 0}to{background-position:-150% 0}}
+.lead{color:var(--mute);font-size:clamp(18px,1.8vw,21px);max-width:620px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.head p{margin-top:14px}
+
+/* botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border-radius:12px;border:1px solid transparent;font:600 16px/1 var(--body);text-decoration:none;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,#4b8dff,#1f5fe6);box-shadow:0 10px 30px -10px var(--glow);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,background .3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px -10px var(--glow)}
+.btn.ghost{background:rgba(255,255,255,.04);border-color:var(--line);box-shadow:none}
+.btn.ghost:hover{border-color:var(--accent);background:rgba(47,123,255,.08)}
+.btn svg{width:18px;height:18px}
+.link{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);text-decoration:none}
+.link span{transition:transform .3s}
+.link:hover span{transform:translateX(4px)}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+
+/* cabecera */
+header{position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top,0px);transition:background .3s,border-color .3s,backdrop-filter .3s;border-bottom:1px solid transparent}
+header.solid{background:rgba(10,15,26,.82);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-color:var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:20px;height:76px}
+.logo{display:flex;align-items:baseline;gap:9px;text-decoration:none}
+.logo b{font-family:"Russo One",var(--display);font-weight:400;font-size:24px;letter-spacing:.05em;background:linear-gradient(180deg,#d4e3ff,#3d7bff 55%,#1446d8);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(47,123,255,.5))}
+.logo span{font-family:Michroma,var(--display);font-size:9px;letter-spacing:.24em;color:#c9d0da}
+nav ul{display:flex;gap:30px;list-style:none}
+nav a{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .25s}
 nav a:hover{color:var(--ink)}
-html{-webkit-tap-highlight-color:transparent}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 18px;border:0;border-radius:999px;font:inherit;font-weight:600;font-size:13px;cursor:pointer;color:#fff!important;background:linear-gradient(135deg,#6f9dff,#1f5cff);text-decoration:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
-.btn:hover{transform:scale(1.04);box-shadow:0 8px 30px rgba(47,107,255,.45)}
+.bar .btn{min-height:44px;padding:10px 18px;font-size:15px}
 
-main{position:relative;z-index:2}
-section{min-height:100vh;display:flex;align-items:center;padding:0 6vw;pointer-events:none}
-section>*{pointer-events:auto}
-section.right{justify-content:flex-end}
-section.center{justify-content:center;text-align:center}
+/* intro: el logo animado a pantalla completa, solo la primera vez de la visita */
+#intro{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:#000;transition:opacity .8s,visibility .8s}
+#intro video{width:min(760px,92vw);-webkit-mask-image:radial-gradient(ellipse 72% 72% at 50% 50%,#000 62%,transparent);mask-image:radial-gradient(ellipse 72% 72% at 50% 50%,#000 62%,transparent)}
+#intro.gone{opacity:0;visibility:hidden}
 
-/* Portada: el logo arriba y el coche debajo */
-section.hero{align-items:flex-start;padding-top:max(84px,9vh)}
-.hero .brand{width:min(640px,94vw,80vh);aspect-ratio:1920/770;margin:0 auto 4px;opacity:0}
-/* el logo es un vídeo en bucle (logo-video.mjs) dibujado con supermuestreo: bordes limpios en cualquier pantalla.
-   Los bordes se funden con el fondo y al bajar se inclina hacia atrás (--hp lo pone el script) */
-.hero .brand video{display:block;width:100%;height:100%;object-fit:cover;
-  -webkit-mask-image:radial-gradient(ellipse 72% 72% at 50% 50%,#000 62%,transparent);mask-image:radial-gradient(ellipse 72% 72% at 50% 50%,#000 62%,transparent);
-  transform:perspective(900px) rotateX(calc(var(--hp,0) * 38deg)) scale(calc(1 - var(--hp,0) * .12));transform-origin:50% 100%}
-.go .hero .brand{animation:rise 1.2s cubic-bezier(.2,.8,.2,1) .15s forwards}
-.hero .claim{font-family:Michroma,sans-serif;font-size:clamp(15px,1.9vw,23px);letter-spacing:.32em;text-transform:uppercase;color:#fff;text-shadow:0 0 18px rgba(47,107,255,.6)}
-.hero p{margin-top:16px;color:var(--ink);font-size:clamp(19px,2.1vw,27px);line-height:1.35;max-width:720px;margin-inline:auto;text-shadow:0 2px 12px #000}
-.chips{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px auto 0;max-width:640px}
-.chips li{padding:10px 18px;border-radius:999px;font-size:16px;font-weight:500;background:rgba(47,107,255,.14);border:1px solid rgba(156,192,255,.3);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.hero .ctas{margin-top:22px}
-.hero .btn{font-size:18px;padding:15px 28px}
-/* entrada de la portada cuando termina de cargar (clase .go en <html>) */
-.hero .claim,.hero p,.chips li,.hero .ctas,.hint{opacity:0;transform:translateY(18px)}
-.go .hero .claim,.go .hero p,.go .chips li,.go .hero .ctas,.go .hint{animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
-.go .hero .claim{animation-delay:.5s}.go .hero p{animation-delay:.65s}.go .hero .ctas{animation-delay:1.25s}.go .hint{animation-delay:1.5s}
-.go .chips li:nth-child(1){animation-delay:.8s}.go .chips li:nth-child(2){animation-delay:.92s}.go .chips li:nth-child(3){animation-delay:1.04s}
-@keyframes rise{to{opacity:1;transform:none}}
-.hint{margin-top:28px;font-size:12px;letter-spacing:.3em;color:var(--mute);text-transform:uppercase}
-.hint i{display:block;width:1px;height:46px;margin:14px auto 0;background:linear-gradient(var(--accent),transparent);animation:drip 2s ease-in-out infinite}
-@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+/* portada */
+.hero{padding-top:clamp(36px,6vw,72px)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(28px,5vw,64px);align-items:center}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(47,123,255,.08);font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent2)}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.hero h1{margin:22px 0 20px}
+.hero .ctas{margin-top:30px}
+.services-line{margin-top:30px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#7f8aa0}
+.hero-photos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hero-photos figure:last-child{transform:translateY(calc(48px - var(--sy,0) * 60px))}
+.hero-photos figure:first-child{transform:translateY(calc(var(--sy,0) * 30px))}
+.photo{position:relative;overflow:hidden;border-radius:var(--r);border:1px solid var(--line);background:var(--card);box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+.photo img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.photo:hover img{transform:scale(1.05)}
+.hero-photos .photo{aspect-ratio:4/5.4}
+.hero-photos .photo::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(125,182,255,.2),inset 0 -80px 80px -40px rgba(10,15,26,.6);border-radius:inherit;pointer-events:none}
 
-/* Tarjetas de cristal */
-.card{position:relative;z-index:1;width:min(580px,100%);padding:40px;border-radius:28px;background:linear-gradient(160deg,rgba(34,34,40,.74),rgba(8,8,10,.74));
-  border:1px solid var(--line);backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);
-  box-shadow:0 30px 80px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12);
-  opacity:0;transform:translateY(40px) scale(.97);filter:blur(8px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1),filter 1s;will-change:transform,opacity}
-.in .card,.in.card{opacity:1;transform:none;filter:none}
-/* marco de luz que gira alrededor de la tarjeta */
-@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
-.card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;
-  background:conic-gradient(from var(--a),transparent 0 62%,rgba(47,107,255,.9) 76%,#cfe0ff 82%,rgba(47,107,255,.9) 88%,transparent 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
-  animation:spin 6s linear infinite paused}
-.in .card::before{animation-play-state:running}
-@keyframes spin{to{--a:360deg}}
-/* etiqueta con brillo que la recorre */
-.tag{font-size:14px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:var(--accent2);
-  background:linear-gradient(100deg,var(--accent2) 40%,#fff 50%,var(--accent2) 60%) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 4s linear infinite}
-@keyframes shine{from{background-position:100% 0}to{background-position:-50% 0}}
-.card h2{font-size:clamp(36px,4.2vw,60px);letter-spacing:-.03em;margin:10px 0 12px;font-weight:700;line-height:1.08}
-/* el título entra palabra a palabra (el script las separa) */
-.card h2 .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em}
-.card h2 .w>span{display:inline-block;transform:translateY(110%);transition:transform .8s cubic-bezier(.2,.8,.2,1) calc(var(--i) * 70ms + .2s)}
-.in .card h2 .w>span{transform:none}
-.card h3{font-size:19px;font-weight:600;margin:18px 0 6px;color:var(--accent2)}
-.card p{color:var(--mute);line-height:1.55;font-size:18px}
-.card ul{list-style:none;margin:22px 0;display:grid;gap:11px;font-size:18px}
-.card ul.two{grid-template-columns:1fr 1fr;column-gap:20px;font-size:17px}
-/* la lista aparece en cascada */
-.card li{display:flex;gap:10px;align-items:baseline;opacity:0;transform:translateX(-14px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i) * 55ms + .45s)}
-.in .card li{opacity:1;transform:none}
-/* palabra gigante de fondo que se desliza con el scroll (--p lo pone el script) */
-section{position:relative;overflow-x:clip}
-.bigword{position:absolute;left:50%;top:50%;z-index:0;white-space:nowrap;pointer-events:none;font-family:"Russo One",Inter,sans-serif;font-size:clamp(90px,17vw,280px);line-height:1;
-  color:transparent;-webkit-text-stroke:2px rgba(156,192,255,.4);transform:translate(calc(-50% + (.5 - var(--p,.5)) * 60vw),-50%)}
-.card li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);transform:translateY(-2px)}
-.prices{padding-top:16px;border-top:1px solid var(--line);display:grid;gap:8px}
-.prices small{color:var(--mute);font-size:14px;letter-spacing:.12em;text-transform:uppercase}
-.prices div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:18px;color:var(--mute)}
-.prices b{font-size:32px;font-weight:700;color:#fff;letter-spacing:-.01em;font-variant-numeric:tabular-nums;text-shadow:0 0 16px rgba(47,107,255,.55)}
-.note{margin-top:14px;font-size:14px!important}
+/* dos caminos */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.path{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:380px;padding:32px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);text-decoration:none;isolation:isolate}
+.path img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.path::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,15,26,.1) 20%,rgba(10,15,26,.92) 85%)}
+.path:hover img{transform:scale(1.06)}
+.path .eyebrow{margin-bottom:10px}
+.path h3{margin-bottom:10px}
+.path p{color:#d4dbe7;max-width:440px;margin-bottom:18px}
 
-/* Medidor de limpieza */
-.meter{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:999px;
-  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
-.meter .bar{width:120px;height:4px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
-.meter .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px}
+/* paquetes: filas foto + texto alternadas */
+.pkg{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(28px,5vw,64px);align-items:center}
+.pkg+.pkg{margin-top:clamp(56px,8vw,96px)}
+.pkg.flip .pkg-media{order:2}
+.pkg-media{position:relative}
+.pkg-media .photo{aspect-ratio:4/3.4}
+.pkg-media .num{position:absolute;top:18px;left:18px;font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.16em;padding:8px 14px;border-radius:999px;background:rgba(10,15,26,.75);border:1px solid var(--line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.pkg h3{margin:12px 0 14px}
+.pkg .lead{font-size:18px}
+.groups{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;margin:22px 0 24px}
+.groups.three{grid-template-columns:1fr 1fr 1fr}
+.group h4{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent2);margin:10px 0 8px}
+.group ul{list-style:none;display:grid;gap:7px}
+.group li{display:flex;gap:10px;align-items:baseline;font-size:16px;line-height:1.4}
+.group li::before{content:"";flex:none;width:7px;height:7px;border-radius:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);transform:translateY(-2px) rotate(45deg)}
+.prices{border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,var(--card2),var(--card));padding:18px 22px;display:grid;gap:2px}
+.prices small{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#7f8aa0;margin-bottom:6px}
+.prices div{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 0;border-top:1px solid rgba(148,180,255,.08);font-size:17px;color:#cfd7e4}
+.prices small+div{border-top:0}
+.prices b{font-family:var(--display);font-weight:800;font-size:28px;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(47,123,255,.45)}
+.note{margin-top:12px;font-size:14px;color:#7f8aa0}
+.pkg .ctas{margin-top:24px}
 
-.contact h2{font-size:clamp(38px,5.4vw,72px);letter-spacing:-.03em}
-.contact p{color:var(--mute);margin:16px auto 0;max-width:560px;font-size:19px}
-.contact .pillars{margin:22px 0 28px;font-family:Michroma,sans-serif;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#dfe6f2}
-.ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn.ghost{background:rgba(12,12,16,.62);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.mail{display:inline-block;margin-top:18px;color:var(--accent2);font-size:14px;text-decoration:none}
-.social{display:flex;justify-content:center;gap:12px;margin-top:18px}
-.social a{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--line);color:var(--ink);transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s}
-.social a:hover,.social a:focus-visible{transform:scale(1.08);border-color:var(--accent);box-shadow:0 0 18px rgba(47,107,255,.45)}
+/* por qué MDGA */
+.why{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.why article{padding:28px;border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(160deg,var(--card2),var(--card));transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s}
+.why article:hover{transform:translateY(-6px);border-color:rgba(47,123,255,.5)}
+.why svg{width:30px;height:30px;stroke:var(--accent2);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.why h3{font-size:22px;margin:16px 0 10px}
+.why p{color:var(--mute);font-size:16px}
+
+/* trabajos */
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.shot{position:relative;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;border:1px dashed rgba(125,182,255,.3);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#7f8aa0;
+  background:linear-gradient(110deg,rgba(255,255,255,.02) 30%,rgba(125,182,255,.08) 50%,rgba(255,255,255,.02) 70%) 0 0/300% 100%;animation:shine 3.5s linear infinite}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* llamada final */
+.cta-box{position:relative;overflow:hidden;text-align:center;padding:clamp(40px,7vw,80px) clamp(20px,5vw,72px);border-radius:28px;border:1px solid var(--line);background:radial-gradient(120% 140% at 50% 0%,rgba(47,123,255,.22),transparent 60%),linear-gradient(160deg,var(--card2),var(--card))}
+.cta-box h2{margin:12px auto 16px;max-width:820px}
+.cta-box .lead{margin:0 auto}
+.pillars{margin:24px 0 30px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2)}
+.cta-box .ctas{justify-content:center}
+.contact-line{margin-top:22px;display:flex;justify-content:center;gap:10px 26px;flex-wrap:wrap;font-size:17px;color:var(--mute)}
+.contact-line a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.social{display:flex;gap:12px}
+.social a{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line);background:rgba(255,255,255,.03);transition:border-color .3s,transform .3s,box-shadow .3s}
+.social a:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 10px 24px -10px var(--glow)}
 .social svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .social .dot{fill:currentColor;stroke:none}
-footer a{color:var(--mute)}
+.cta-box .social{justify-content:center;margin-top:26px}
 
-/* Pestaña "Our Work": galería de trabajos hechos (de momento, huecos vacíos) */
-#work{margin:auto;width:min(1100px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:28px;border:1px solid var(--line);border-radius:28px;color:var(--ink);
-  background:linear-gradient(160deg,rgba(30,30,36,.92),rgba(6,6,8,.94));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:auto}
-#work[open]{animation:pop .55s cubic-bezier(.2,.8,.2,1)}
-#work::backdrop{background:rgba(0,0,0,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.96)}}
+/* pie */
+footer{border-top:1px solid var(--line);padding-block:56px 28px;background:var(--bg2)}
+.foot{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
+.foot p{color:var(--mute);font-size:15px;margin-top:14px;max-width:320px}
+.foot h4{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+.foot ul{list-style:none;display:grid;gap:9px}
+.foot ul a{color:var(--mute);text-decoration:none;font-size:15px}
+.foot ul a:hover{color:var(--ink)}
+.foot .phone{display:inline-block;margin-top:16px;font-family:var(--display);font-weight:700;font-size:22px;color:var(--ink);text-decoration:none}
+.legal{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:#6f7a8f}
+
+/* pestaña "Our Work" */
+#work{margin:auto;width:min(1100px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:28px;border:1px solid var(--line);border-radius:26px;color:var(--ink);background:linear-gradient(160deg,var(--card2),var(--bg));box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:auto}
+#work[open]{animation:pop .5s cubic-bezier(.2,.8,.2,1)}
+#work::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+@keyframes pop{from{opacity:0;transform:translateY(24px) scale(.97)}}
 body:has(#work[open]){overflow:hidden}
 .work-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
-.work-head h2{font-size:clamp(26px,3vw,40px);letter-spacing:-.03em;margin-top:8px}
-.work-head p{color:var(--mute);margin-top:6px}
-.close{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--glass);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
-.close:hover,.close:focus-visible{border-color:var(--accent)}
-.work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-.shot{position:relative;aspect-ratio:4/3;border-radius:18px;overflow:hidden;border:1px dashed rgba(156,192,255,.3);display:grid;place-items:center;color:var(--mute);font-size:13px;letter-spacing:.12em;text-transform:uppercase;
-  background:linear-gradient(110deg,rgba(255,255,255,.03) 30%,rgba(156,192,255,.1) 50%,rgba(255,255,255,.03) 70%) 0 0/300% 100%;animation:shine 3s linear infinite}
-.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;color:var(--mute);font-size:12px}
+.work-head h2{font-size:clamp(28px,3.4vw,44px)}
+.close{flex:none;width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font-size:26px;line-height:1;cursor:pointer}
 
-#loader{position:fixed;inset:0;z-index:20;background:#000;display:grid;place-items:center;transition:opacity 1s}
-#loader div{width:140px;height:2px;background:rgba(255,255,255,.1);overflow:hidden;border-radius:2px}
-#loader i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
-#loader.done{opacity:0;pointer-events:none}
-/* sin 3D (ver la red de seguridad al final): se esconde el medidor */
-.no3d .meter{display:none}
-.why{display:none;margin-top:10px!important;font-size:11px!important;color:rgba(255,255,255,.35)!important}
-.no3d .why{display:block}
+/* aparición al hacer scroll (--d = retraso en cascada) */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--d,0) * 90ms)}
+.rv.in{opacity:1;transform:none}
 
-@media (max-width:760px){
-  nav .links{display:none}
-  nav{gap:14px;padding:8px 8px 8px 16px}
-  /* tarjetas compactas abajo; el coche ocupa la mitad de arriba (ver setViewOffset en el script) */
-  /* con la sección centrada en pantalla, la tarjeta acaba justo encima del medidor, mida lo que mida */
-  section,section.right{align-items:flex-end;justify-content:center;padding:0 16px 64px}
-  section.hero{align-items:flex-start;padding:84px 16px 0}
-  section.contact{align-items:center;padding-bottom:0}
-  .card{padding:20px 20px 18px;border-radius:22px;background:linear-gradient(160deg,rgba(28,28,32,.8),rgba(8,8,10,.8));
-    backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%)}
-  .card h2{font-size:31px;margin:6px 0 10px}
-  .card h3{font-size:17px;margin:14px 0 4px}
-  .card p{font-size:16px}
-  .card ul{margin:12px 0;gap:7px;font-size:16px}
-  .card ul.two{grid-template-columns:1fr;font-size:16px}
-  .prices{gap:4px;padding-top:12px}
-  .prices div{font-size:16px}
-  .prices b{font-size:24px}
-  .hero p{font-size:19px}
-  .hero .claim{font-size:15px}
-  .hero .btn{font-size:17px;padding:14px 22px}
-  .contact p{font-size:16px}
-  .chips li{font-size:14px;padding:8px 14px}
-  .bigword{top:30%;font-size:26vw}
-  #work{padding:20px}
+@media (max-width:960px){
+  nav{display:none}
+  .hero .wrap,.pkg,.paths{grid-template-columns:1fr}
+  .pkg.flip .pkg-media{order:0}
+  .why{grid-template-columns:1fr 1fr}
+  .foot{grid-template-columns:1fr 1fr}
+}
+@media (max-width:600px){
+  body{font-size:16px}
+  section{padding-block:56px}
+  .bar{height:64px}
+  .logo span{display:none}
+  .bar .btn{min-height:42px;padding:9px 14px;font-size:14px}
+  .hero-photos{gap:10px}
+  .hero-photos figure:last-child{transform:translateY(28px)}
+  .hero-photos figure:first-child{transform:none}
+  .path{min-height:300px;padding:24px}
+  .groups,.groups.three{grid-template-columns:1fr}
+  .why{grid-template-columns:1fr}
   .work-grid{grid-template-columns:1fr 1fr;gap:10px}
-  .meter{bottom:calc(12px + env(safe-area-inset-bottom,0px));padding:8px 12px}
-  .meter .bar{width:80px}
+  .foot{grid-template-columns:1fr}
+  .ctas .btn{flex:1 1 auto}
+  #work{padding:20px}
 }
 @media (prefers-reduced-motion:reduce){
-  .card,.card li,.card h2 .w>span{transition:none}
-  .hint i,.tag,.shot,.card::before,#work[open]{animation:none}
-  .hero .brand,.hero .claim,.hero p,.chips li,.hero .ctas,.hint{opacity:1;transform:none;animation:none!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none;transition:none}
+  .hl,.shot,#work[open]{animation:none}
+  .photo img,.path img{transition:none}
+  .hero-photos figure{transform:none!important}
 }
 </style>
 </head>
 <body>
-<canvas id="gl"></canvas>
-<div class="dim"></div>
-<div class="vignette"></div>
-<div id="loader"><div><i></i></div></div>
+<div id="intro" aria-hidden="true"><video src="logo-loop.mp4" poster="logo-poster.jpg" autoplay muted loop playsinline></video></div>
 
-<nav>
-  <a class="logo" href="#"><b>MDGA</b><span>AUTO DETAILING</span></a>
-  <div class="links"><a href="#basic">Basic</a><a href="#premium">Premium</a><a href="#ceramic">Ceramic Coating</a><a href="#work" data-open-work>Our Work</a></div>
-  <a class="btn" href="#book">Get a Quote</a>
-</nav>
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top" aria-label="MDGA Auto Detailing, home"><b>MDGA</b><span>AUTO DETAILING</span></a>
+    <nav aria-label="Main"><ul>
+      <li><a href="#packages">Packages</a></li><li><a href="#ceramic">Ceramic Coating</a></li><li><a href="#work" data-open-work>Our Work</a></li><li><a href="#contact">Contact</a></li>
+    </ul></nav>
+    <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Request a Quote</a>
+  </div>
+</header>
 
-<main>
-  <section class="hero center">
-    <div>
-      <h1 class="brand" aria-label="MDGA Auto Detailing"><video src="logo-loop.mp4" poster="logo-poster.jpg" autoplay muted loop playsinline aria-hidden="true"></video></h1>
-      <div class="claim">Luxury Care in Every Detail</div>
-      <p>Premium mobile detailing for everyday, luxury and exotic vehicles. We come to you.</p>
-      <ul class="chips"><li>Mobile Service · We Come to You</li><li>Luxury &amp; Exotic Cars</li><li>Paint Correction &amp; Ceramic Coating</li></ul>
-      <div class="ctas">
-        <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Get a Free Quote</a>
-        <button class="btn ghost" type="button" data-open-work>See Our Work</button>
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="pill rv"><i></i>Mobile Auto Detailing · We Come to You</span>
+        <h1 class="rv" style="--d:1">Luxury Care.<br>In Every <span class="hl">Detail</span>.</h1>
+        <p class="lead rv" style="--d:2">Premium mobile detailing for everyday, luxury and exotic vehicles, done with precision and attention to every detail, right where you are.</p>
+        <div class="ctas rv" style="--d:3">
+          <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Request a Free Quote</a>
+          <a class="btn ghost" href="tel:+15616284360"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call (561) 628-4360</a>
+        </div>
+        <p class="services-line rv" style="--d:4">Basic Detailing · Premium Detailing · Paint Correction · Ceramic Coating</p>
       </div>
-      <div class="hint">Scroll<i></i></div>
-      <p class="why" id="why"></p>
+      <div class="hero-photos">
+        <figure class="photo rv" style="--d:2"><img src="img/hero-car.jpg" width="900" height="1350" alt="Glossy black car under studio lights"></figure>
+        <figure class="photo rv" style="--d:3"><img src="img/foam.jpg" width="900" height="1350" alt="Black car covered in snow foam during a premium wash"></figure>
+      </div>
     </div>
   </section>
 
-  <section id="basic" class="right"><div class="bigword" aria-hidden="true">BASIC</div><div class="card">
-    <div class="tag">Package 01</div><h2>Basic Detailing</h2>
-    <h3>Exterior Cleaning</h3>
-    <ul class="two"><li>Exterior hand wash</li><li>Wheels and rims cleaning</li><li>Tire shine application</li><li>Microfiber towel drying</li><li>Exterior windows cleaning</li></ul>
-    <h3>Interior Cleaning</h3>
-    <ul class="two"><li>Basic interior vacuuming</li><li>Dashboard and console wipe-down</li><li>Light cleaning of interior surfaces</li><li>Interior windows cleaning</li><li>Light trash removal</li><li>Cleaning of floor mats</li></ul>
-    <div class="prices"><small>Starting at</small>
-      <div>Sedan / Compact Car<b>$50</b></div><div>Small / Medium SUV<b>$65</b></div><div>Pickup Truck / Large SUV<b>$80</b></div>
-    </div>
-  </div></section>
-
-  <section id="premium"><div class="bigword" aria-hidden="true">EXTERIOR</div><div class="card">
-    <div class="tag">Package 02 · Premium</div><h2>Premium Exterior Detailing</h2>
-    <ul class="two"><li>Premium foam exterior wash</li><li>Deep cleaning of rims and tires</li><li>Fender well cleaning</li><li>Door jamb cleaning</li><li>Bug and grime removal</li><li>Professional microfiber drying</li><li>Tire shine and protection</li><li>Wax or paint sealant application</li></ul>
-  </div></section>
-
-  <section id="interior" class="right"><div class="bigword" aria-hidden="true">INTERIOR</div><div class="card">
-    <div class="tag">Package 02 · Premium</div><h2>Premium Interior Detailing</h2>
-    <ul class="two"><li>Deep vacuuming of the entire interior</li><li>Carpet and floor mat cleaning</li><li>Leather or fabric seat cleaning</li><li>Center console and dashboard cleaning</li><li>Door panels and compartments</li><li>A/C vent cleaning</li><li>Interior glass cleaning</li><li>Leather conditioning</li><li>Light odor removal</li></ul>
-  </div></section>
-
-  <section id="finishing"><div class="bigword" aria-hidden="true">FINISH</div><div class="card">
-    <div class="tag">Package 02 · Premium</div><h2>Luxury Finishing Touches</h2>
-    <ul class="two"><li>UV protection on interior plastics</li><li>Paint gloss and professional finish</li><li>Exterior trim treatment</li><li>Hard-to-reach detail cleaning</li><li>Final quality inspection</li><li>Premium fragrance</li></ul>
-    <div class="prices"><small>Premium package · starting at</small>
-      <div>Sedan / Compact Car<b>$120</b></div><div>Small / Medium SUV<b>$160</b></div><div>Pickup Truck<b>$200</b></div><div>Large SUV / 3-Row SUV / Van<b>$250</b></div>
-    </div>
-  </div></section>
-
-  <section id="ceramic" class="right"><div class="bigword" aria-hidden="true">CERAMIC</div><div class="card">
-    <div class="tag">Package 03</div><h2>Paint Correction &amp; Ceramic Coating</h2>
-    <p>Paint correction removes swirl marks, light scratches, oxidation and paint imperfections, restoring depth, clarity and an exceptional glossy finish.</p>
-    <p style="margin-top:10px">Ceramic coating adds a long-lasting protective layer against contaminants, UV exposure and everyday dirt. Its hydrophobic finish makes your vehicle easier to clean and maintain.</p>
-    <div class="prices" style="margin-top:20px"><small>Complete correction + coating · starting at</small>
-      <div>Sedan / Compact Car<b>$500</b></div><div>SUV<b>$700</b></div><div>Pickup Truck / Large SUV / Van<b>$900</b></div>
-    </div>
-    <p class="note">Prices may vary depending on vehicle size, paint condition, level of correction required and the ceramic coating protection selected.</p>
-  </div></section>
-
-  <section id="book" class="contact center"><div class="bigword" aria-hidden="true">BOOK NOW</div>
-    <div class="card" style="width:min(600px,100%)">
-      <div class="tag">We Come to You</div>
-      <h2>Your Vehicle Deserves the Best.</h2>
-      <p>Experience the ultimate level of luxury car care. At MDGA Auto Detailing we deliver premium mobile detailing with exceptional quality, precision and attention to every detail, from everyday vehicles to luxury and exotic cars.</p>
-      <div class="pillars">Premium Quality · Professional Service · Exceptional Results</div>
-      <div class="ctas">
-        <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Get a Quote on WhatsApp</a>
-        <a class="btn ghost" href="tel:+15616284360">Call (561) 628-4360</a>
-        <button class="btn ghost" type="button" data-open-work>See Our Work</button>
+  <section class="alt">
+    <div class="wrap">
+      <div class="head rv"><div><span class="eyebrow">What does your vehicle need?</span><h2>Two Services. One Standard of <span class="hl">Care</span>.</h2></div></div>
+      <div class="paths">
+        <a class="path rv" href="#packages">
+          <img src="img/hand-wash.jpg" width="1400" height="933" alt="Detailer hand washing a car with a microfiber mitt" loading="lazy">
+          <span class="eyebrow">Detailing Packages</span>
+          <h3>Inside &amp; Out, Done Right.</h3>
+          <p>From a fresh basic wash to a full premium detail of the exterior, interior and finishing touches.</p>
+          <span class="link">See Packages <span>→</span></span>
+        </a>
+        <a class="path rv" style="--d:1" href="#ceramic">
+          <img src="img/polish.jpg" width="1400" height="611" alt="Detailer machine polishing car paint" loading="lazy">
+          <span class="eyebrow">Paint Correction &amp; Ceramic</span>
+          <h3>Restore. Protect. Shine.</h3>
+          <p>Remove swirl marks and scratches, then lock in long-lasting gloss and protection.</p>
+          <span class="link">See Ceramic Coating <span>→</span></span>
+        </a>
       </div>
-      <a class="mail" href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a>
-      <div class="social">
-        <a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r=".9" class="dot"/></svg></a>
-        <a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok">
-          <svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.4 2.6 2.2 4.3 5 4.5"/></svg></a>
-        <a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
-          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" class="dot"/></svg></a>
-        <a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener" aria-label="Google" title="Google: reviews &amp; location">
-          <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 12h-7"/></svg></a>
+    </div>
+  </section>
+
+  <section id="packages">
+    <div class="wrap">
+      <div class="head rv">
+        <div><span class="eyebrow">Our Packages</span><h2>Professional Care for Every <span class="hl">Detail</span>.</h2></div>
+        <a class="btn ghost" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Request a Quote</a>
+      </div>
+
+      <article class="pkg">
+        <div class="pkg-media rv"><figure class="photo"><img src="img/wheel.jpg" width="900" height="1200" alt="Detailer cleaning a tire with a soft brush" loading="lazy"></figure><span class="num">01</span></div>
+        <div>
+          <span class="eyebrow rv">Package 01</span>
+          <h3 class="rv">Basic Detailing</h3>
+          <p class="lead rv">A complete refresh inside and out for your everyday vehicle.</p>
+          <div class="groups rv">
+            <div class="group"><h4>Exterior</h4><ul><li>Exterior hand wash</li><li>Wheels and rims cleaning</li><li>Tire shine application</li><li>Microfiber towel drying</li><li>Exterior windows cleaning</li></ul></div>
+            <div class="group"><h4>Interior</h4><ul><li>Basic interior vacuuming</li><li>Dashboard and console wipe-down</li><li>Light cleaning of interior surfaces</li><li>Interior windows cleaning</li><li>Light trash removal</li><li>Cleaning of floor mats</li></ul></div>
+          </div>
+          <div class="prices rv"><small>Starting at</small>
+            <div>Sedan / Compact Car<b>$50</b></div><div>Small / Medium SUV<b>$65</b></div><div>Pickup Truck / Large SUV<b>$80</b></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="pkg flip">
+        <div class="pkg-media rv"><figure class="photo"><img src="img/interior.jpg" width="900" height="1350" alt="Spotless black leather car interior" loading="lazy"></figure><span class="num">02</span></div>
+        <div>
+          <span class="eyebrow rv">Package 02 · Premium</span>
+          <h3 class="rv">Premium Detailing</h3>
+          <p class="lead rv">Our full treatment: deep exterior, deep interior and luxury finishing touches.</p>
+          <div class="groups three rv">
+            <div class="group"><h4>Exterior</h4><ul><li>Premium foam wash</li><li>Deep rim &amp; tire cleaning</li><li>Fender well cleaning</li><li>Door jamb cleaning</li><li>Bug and grime removal</li><li>Microfiber drying</li><li>Tire shine &amp; protection</li><li>Wax or paint sealant</li></ul></div>
+            <div class="group"><h4>Interior</h4><ul><li>Deep vacuuming</li><li>Carpets &amp; floor mats</li><li>Leather or fabric seats</li><li>Console &amp; dashboard</li><li>Door panels &amp; compartments</li><li>A/C vent cleaning</li><li>Interior glass</li><li>Leather conditioning</li><li>Light odor removal</li></ul></div>
+            <div class="group"><h4>Finishing</h4><ul><li>UV protection on interior plastics</li><li>Paint gloss &amp; professional finish</li><li>Exterior trim treatment</li><li>Hard-to-reach detail cleaning</li><li>Final quality inspection</li><li>Premium fragrance</li></ul></div>
+          </div>
+          <div class="prices rv"><small>Premium package · starting at</small>
+            <div>Sedan / Compact Car<b>$120</b></div><div>Small / Medium SUV<b>$160</b></div><div>Pickup Truck<b>$200</b></div><div>Large SUV / 3-Row SUV / Van<b>$250</b></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="pkg" id="ceramic">
+        <div class="pkg-media rv"><figure class="photo"><img src="img/finish.jpg" width="1400" height="933" alt="Detailer finishing the paint around a headlight" loading="lazy"></figure><span class="num">03</span></div>
+        <div>
+          <span class="eyebrow rv">Package 03</span>
+          <h3 class="rv">Paint Correction &amp; Ceramic Coating</h3>
+          <p class="lead rv">Paint correction removes swirl marks, light scratches, oxidation and paint imperfections, restoring depth, clarity and an exceptional glossy finish.</p>
+          <p class="lead rv" style="margin-top:12px">Ceramic coating adds a long-lasting protective layer against contaminants, UV exposure and everyday dirt. Its hydrophobic finish makes your vehicle easier to clean and maintain.</p>
+          <div class="prices rv" style="margin-top:24px"><small>Complete correction + coating · starting at</small>
+            <div>Sedan / Compact Car<b>$500</b></div><div>SUV<b>$700</b></div><div>Pickup Truck / Large SUV / Van<b>$900</b></div>
+          </div>
+          <p class="note rv">Prices may vary depending on vehicle size, paint condition, level of correction required and the ceramic coating protection selected.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="head rv"><div><span class="eyebrow">Why MDGA?</span><h2>The Difference Is in the <span class="hl">Details</span>.</h2></div></div>
+      <div class="why">
+        <article class="rv"><svg viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><h3>We Come to You</h3><p>Professional mobile detailing at your home or office. No waiting rooms, no driving around.</p></article>
+        <article class="rv" style="--d:1"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg><h3>Premium Quality</h3><p>Premium products and proven techniques for a deep clean and a lasting shine.</p></article>
+        <article class="rv" style="--d:2"><svg viewBox="0 0 24 24"><path d="M3 15l2-6.5A3 3 0 0 1 7.9 6.3h8.2a3 3 0 0 1 2.9 2.2L21 15"/><path d="M3 15h18v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1H7v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><circle cx="7.5" cy="15" r=".6"/><circle cx="16.5" cy="15" r=".6"/></svg><h3>Every Kind of Car</h3><p>From everyday vehicles to luxury and exotic cars, treated with the same care.</p></article>
+        <article class="rv" style="--d:3"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/><path d="M8.5 11l1.7 1.7L13.8 9"/></svg><h3>Attention to Detail</h3><p>Precision in every step and a final quality inspection before we leave.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <div class="wrap">
+      <div class="head rv">
+        <div><span class="eyebrow">Our Work</span><h2>Real Results from Real <span class="hl">MDGA</span> Jobs.</h2><p class="lead">Before &amp; after photos of vehicles we have detailed.</p></div>
+        <button class="btn ghost" type="button" data-open-work>See All Our Work</button>
+      </div>
+      <div class="work-grid">
+        <figure class="shot rv">Coming soon</figure><figure class="shot rv" style="--d:1">Coming soon</figure><figure class="shot rv" style="--d:2">Coming soon</figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="cta-box rv">
+        <span class="eyebrow">We Come to You</span>
+        <h2>Your Vehicle Deserves the <span class="hl">Best</span>.</h2>
+        <p class="lead">Experience the ultimate level of luxury car care. Contact us today for a personalized quote and give your vehicle the treatment it deserves.</p>
+        <div class="pillars">Premium Quality · Professional Service · Exceptional Results</div>
+        <div class="ctas">
+          <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%27d%20like%20a%20quote%20for%20my%20vehicle." target="_blank" rel="noopener">Get a Quote on WhatsApp</a>
+          <a class="btn ghost" href="tel:+15616284360">Call (561) 628-4360</a>
+        </div>
+        <div class="contact-line"><a href="tel:+15616284360">(561) 628-4360</a><a href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a></div>
+        <div class="social">
+          <a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r=".9" class="dot"/></svg></a>
+          <a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok"><svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.4 2.6 2.2 4.3 5 4.5"/></svg></a>
+          <a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" class="dot"/></svg></a>
+          <a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener" aria-label="Google" title="Google: reviews &amp; location"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 12h-7"/></svg></a>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="#top"><b>MDGA</b><span>AUTO DETAILING</span></a>
+        <p>Premium mobile auto detailing, paint correction and ceramic coating. Luxury Care in Every Detail.</p>
+        <a class="phone" href="tel:+15616284360">(561) 628-4360</a>
+      </div>
+      <div><h4>Packages</h4><ul><li><a href="#packages">Basic Detailing</a></li><li><a href="#packages">Premium Detailing</a></li><li><a href="#ceramic">Paint Correction</a></li><li><a href="#ceramic">Ceramic Coating</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="https://wa.me/15616284360" target="_blank" rel="noopener">WhatsApp</a></li><li><a href="tel:+15616284360">Call us</a></li><li><a href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a></li><li><a href="#work" data-open-work>Our Work</a></li></ul></div>
+      <div><h4>Follow Us</h4><ul><li><a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener">TikTok</a></li><li><a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener">YouTube</a></li><li><a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener">Google</a></li></ul></div>
+    </div>
+    <div class="legal"><span>© 2026 MDGA Auto Detailing. All rights reserved.</span><span>Photos: Unsplash</span></div>
+  </div>
+</footer>
+
 <!-- Pestaña de trabajos hechos. Para añadir una foto: <figure class="shot"><img src="fotos/..." alt="..."></figure> -->
 <dialog id="work" aria-labelledby="workTitle">
   <div class="work-head">
-    <div>
-      <div class="tag">Our Work</div>
-      <h2 id="workTitle">Real Results from Real MDGA Jobs</h2>
-      <p>Before &amp; after photos of vehicles we have detailed.</p>
-    </div>
+    <div><span class="eyebrow">Our Work</span><h2 id="workTitle">Real Results from Real MDGA Jobs</h2></div>
     <button class="close" type="button" aria-label="Close">×</button>
   </div>
   <div class="work-grid">
@@ -319,48 +414,39 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
     <figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure>
   </div>
 </dialog>
-<footer>© MDGA Auto Detailing · Luxury Care in Every Detail.<br><a href="tel:+15616284360">(561) 628-4360</a> · <a href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a><br>
-<a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener">YouTube</a> · <a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener">Google</a><br><small>3D car model "Ferrari 458 Italia" by vicent091036 (CC BY 4.0) · Studio lighting from Poly Haven (CC0)</small></footer>
-
-<div class="meter"><span>Dirt</span><div class="bar"><i id="bar"></i></div><span id="pct">100%</span></div>
 
 <script>
-// Red de seguridad (script normal, funciona aunque el 3D falle): las tarjetas aparecen al hacer scroll, y si el
-// coche no ha cargado en 30 s o hay un error antes, se quita la pantalla de carga y la web se lee sin el 3D.
 (() => {
   const root = document.documentElement, still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const sections = [...document.querySelectorAll('main section')];
 
-  // títulos palabra a palabra y listas en cascada (los retrasos van en --i)
-  document.querySelectorAll('.card h2').forEach((h) => {
-    h.innerHTML = h.innerHTML.split(' ').map((w, i) => `<span class="w" style="--i:${i}"><span>${w}</span></span>`).join(' ');
-  });
-  document.querySelectorAll('.card ul').forEach((ul) => [...ul.children].forEach((li, i) => li.style.setProperty('--i', i)));
+  // intro con el logo: una vez por visita, se salta tocando
+  const intro = document.getElementById('intro');
+  let seen = false;
+  try { seen = sessionStorage.getItem('mdga-intro') === '1'; sessionStorage.setItem('mdga-intro', '1'); } catch {}
+  const hideIntro = () => { intro.classList.add('gone'); setTimeout(() => intro.remove(), 900); };
+  if (seen || still) intro.remove(); else { intro.addEventListener('click', hideIntro); setTimeout(hideIntro, 2600); }
 
-  // los precios cuentan desde 0 la primera vez que se ven
+  // aparición en cascada al hacer scroll y precios que cuentan desde 0
   const countUp = (el) => {
     const to = +el.textContent.replace(/\D/g, ''), t0 = performance.now();
     const step = (t) => { const k = Math.min(1, (t - t0) / 1100); el.textContent = '$' + Math.round(to * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   };
   const io = new IntersectionObserver((es) => es.forEach((e) => {
-    if (!e.isIntersecting || e.target.classList.contains('in')) return;
+    if (!e.isIntersecting) return;
     e.target.classList.add('in');
     if (!still) e.target.querySelectorAll('.prices b').forEach(countUp);
-  }), { threshold: 0.25 });
-  sections.forEach((s) => io.observe(s));
+    io.unobserve(e.target);
+  }), { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.rv').forEach((el) => io.observe(el));
 
-  // al hacer scroll: se oscurece el fondo tras la portada y las palabras gigantes se deslizan
+  // cabecera sólida al bajar y fotos de la portada con un poco de paralaje
+  const header = document.querySelector('header');
   let queued = false;
   const onScroll = () => {
     queued = false;
-    root.style.setProperty('--dim', Math.min(1, scrollY / (innerHeight * 0.8)).toFixed(3));
-    root.style.setProperty('--hp', Math.min(1, scrollY / innerHeight).toFixed(3)); // inclinación del logo
-    for (const s of sections) {
-      const r = s.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) continue;
-      s.style.setProperty('--p', ((innerHeight - r.top) / (innerHeight + r.height)).toFixed(3));
-    }
+    header.classList.toggle('solid', scrollY > 10);
+    root.style.setProperty('--sy', Math.min(1, scrollY / innerHeight).toFixed(3));
   };
   addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(onScroll); } }, { passive: true });
   onScroll();
@@ -371,410 +457,7 @@ footer{position:relative;z-index:2;text-align:center;padding:40px 16px 90px;colo
   work.querySelector('.close').addEventListener('click', () => work.close());
   work.addEventListener('click', (e) => { if (e.target === work) work.close(); }); // tocar fuera la cierra
   if (location.hash === '#work') work.showModal();
-
-  // el motivo se escribe en letra pequeña bajo "Scroll" para poder diagnosticar el teléfono del cliente
-  const no3d = (why) => {
-    const l = document.getElementById('loader');
-    if (l.classList.contains('done')) return;
-    l.classList.add('done');
-    root.classList.add('no3d', 'go');
-    document.getElementById('why').textContent = '3D: ' + why;
-  };
-  setTimeout(() => no3d('timeout at ' + (window.__stage || 'start')), 30000);
-  addEventListener('error', (e) => {
-    const t = e.target;
-    if (t && t !== window && t.tagName !== 'SCRIPT') return; // si falla una fuente o una imagen, el 3D sigue
-    no3d(e.message || (t && t.src ? 'failed ' + t.src.split('/').pop() : 'library failed to load'));
-  }, true);
-  addEventListener('unhandledrejection', (e) => no3d(String(e.reason && e.reason.message || e.reason)));
 })();
-</script>
-
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
-</script>
-<script type="module">
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-
-const canvas = document.getElementById('gl');
-const mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
-// ?video = modo grabación (video.mjs): resolución completa, máxima calidad y arranque manual con __start()
-const VIDEO = new URLSearchParams(location.search).has('video');
-const light = mobile && !VIDEO; // ahorros de rendimiento solo para móviles de verdad
-let W = canvas.clientWidth, H = canvas.clientHeight;
-let pr = VIDEO ? devicePixelRatio : Math.min(devicePixelRatio, mobile ? 1.5 : 1.75); // baja sola si el móvil no llega a 45 fps (ver frame)
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: VIDEO }); // el suavizado va en el composer
-renderer.setPixelRatio(pr);
-renderer.setSize(W, H, false);
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.9;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
-scene.fog = new THREE.Fog(0x000000, 9, 20);
-// reflejos: primero un estudio sintético y, en cuanto carga, un estudio fotográfico real (HDRI de Poly Haven, CC0)
-const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
-
-// El modelo y el HDRI van como texto base64 (-glb.txt / -hdr.txt) porque el alojamiento solo sirve tipos web estándar
-async function b64Bytes(url, onProgress) {
-  const res = await fetch(url), total = +res.headers.get('content-length') || 0, reader = res.body.getReader(), parts = [];
-  for (let got = 0; ;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    parts.push(value); got += value.length;
-    if (total) onProgress?.(Math.min(1, got / total));
-  }
-  const s = atob(await new Blob(parts).text()), out = new Uint8Array(s.length);
-  for (let i = 0; i < s.length; i++) out[i] = s.charCodeAt(i);
-  return out.buffer;
-}
-// se pide después del coche para no competir por la conexión del móvil
-const loadStudio = () => b64Bytes('studio-hdr.txt').then((buf) => {
-  const d = new RGBELoader().parse(buf);
-  const hdr = new THREE.DataTexture(d.data, d.width, d.height, THREE.RGBAFormat, d.type);
-  Object.assign(hdr, { colorSpace: THREE.LinearSRGBColorSpace, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, flipY: true, mapping: THREE.EquirectangularReflectionMapping, needsUpdate: true });
-  scene.environment = pmrem.fromEquirectangular(hdr).texture;
-  window.__studio = true;
-  hdr.dispose();
-});
-
-const camera = new THREE.PerspectiveCamera(36, W / H, 0.05, 60);
-scene.add(camera);
-
-// Luz de estudio: un foco cenital cálido que proyecta la sombra y un contraluz frío para los reflejos
-const key = new THREE.SpotLight(0xfff1dc, 60, 20, 0.6, 0.8);
-key.position.set(0, 7, 0);
-key.castShadow = true;
-key.shadow.mapSize.setScalar(VIDEO ? 4096 : light ? 1024 : 2048);
-renderer.shadowMap.autoUpdate = false; // coche y foco no se mueven: la sombra se calcula una sola vez
-key.shadow.camera.near = 3; key.shadow.camera.far = 12;
-key.shadow.bias = -0.0002; key.shadow.normalBias = 0.02;
-scene.add(key);
-const rim = new THREE.DirectionalLight(0x9fb8ff, 1.2);
-rim.position.set(-4, 2, -6);
-scene.add(rim);
-const sweep = new THREE.PointLight(0xcfe0ff, 0, 6); // barrido de brillo en el acabado final
-scene.add(sweep);
-
-const floor = new THREE.Mesh(new THREE.CircleGeometry(30, 64), new THREE.MeshStandardMaterial({ color: 0x0c0c0e, roughness: 0.55, metalness: 0, envMapIntensity: 0.1 }));
-floor.rotation.x = -Math.PI / 2;
-floor.receiveShadow = true;
-scene.add(floor);
-
-// Suavizado de bordes: la escena se dibuja en un búfer propio (por el brillo), así que el antialias del lienzo no sirve.
-// Va un SMAA al final (tras OutputPass). (El MSAA en ese búfer fallaba en pantallas verticales.)
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(W / 2, H / 2), 0.25, 0.5, 0.88);
-composer.addPass(bloom);
-composer.addPass(new OutputPass());
-composer.addPass(new SMAAPass(W * pr, H * pr));
-
-// ---------- Suciedad y espuma: ruido 3D en el shader; la espuma cubre, se escurre y al irse deja la pintura limpia ----------
-const extDirt = { value: 1 }, intDirt = { value: 1 }, extFoam = { value: 0 }, intFoam = { value: 0 }, uTime = { value: 0 };
-const NOISE = `
-uniform float uDirt, uFoam, uTime; varying vec3 vDPos, vDNrm;
-float h3(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
-float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
- return mix(mix(mix(h3(i),h3(i+vec3(1,0,0)),f.x),mix(h3(i+vec3(0,1,0)),h3(i+vec3(1,1,0)),f.x),f.y),
-            mix(mix(h3(i+vec3(0,0,1)),h3(i+vec3(1,0,1)),f.x),mix(h3(i+vec3(0,1,1)),h3(i+vec3(1,1,1)),f.x),f.y),f.z);}
-float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<${light ? 3 : 4};i++){s+=a*n3(p);p*=2.03;a*=.5;}return s;}
-`;
-function dirty(mat, u, foamU, mud) {
-  mat.onBeforeCompile = (s) => {
-    Object.assign(s.uniforms, { uDirt: u, uFoam: foamU, uTime });
-    s.vertexShader = 'varying vec3 vDPos, vDNrm;\n' + s.vertexShader.replace('#include <begin_vertex>',
-      '#include <begin_vertex>\nvDPos = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvDNrm = normalize(mat3(modelMatrix) * objectNormal);');
-    s.fragmentShader = NOISE + s.fragmentShader
-      .replace('#include <color_fragment>', `#include <color_fragment>
-        float dMask = 0.0, fMask = 0.0, wet = 0.0, hgt = 0.0;
-        if (uDirt + uFoam > 0.001) { // coche limpio: no se calcula ruido (las secciones finales van mucho más ligeras)
-        // el detalle más fino se apaga cuando es más pequeño que un píxel (si no, parpadea y hace dientes de sierra)
-        float px = length(fwidth(vDPos));
-        float aaG = clamp(1.5 - px * 60.0, 0.0, 1.0), aaB = clamp(1.5 - px * 140.0, 0.0, 1.0), aaB2 = clamp(1.5 - px * 55.0, 0.0, 1.0);
-        float big = fbm(vDPos * 2.2), fine = fbm(vDPos * 11.0 + 7.0), grain = mix(.5, n3(vDPos * 60.0), aaG);
-        float up = clamp(vDNrm.y, 0.0, 1.0);            // capó y techo acumulan polvo
-        float low = clamp(1.0 - vDPos.y / 1.15, 0.0, 1.0);  // el barro sube desde abajo
-        float drip = fbm(vec3(vDPos.x * 9.0, vDPos.y * 1.2, vDPos.z * 9.0)); // chorretones verticales
-        float mudM = smoothstep(.5, .75, big * .7 + low * ${mud.toFixed(2)} + drip * .25 - .15);
-        float dust = smoothstep(.3, .8, fine * .7 + up * .5) * .8;
-        float cover = clamp(max(mudM, dust), 0.0, 1.0);
-        // el agua se lleva la suciedad por zonas, no con un fundido plano
-        float wn = fbm(vDPos * 1.3 + 3.0);
-        dMask = cover * smoothstep(wn - .08, wn + .08, uDirt * 1.25 - .12);
-        wet = mudM * smoothstep(.55, .8, big);             // barro húmedo: más oscuro y brillante
-        vec3 dirtCol = mix(vec3(.4, .35, .28) * (.8 + .35 * grain), mix(vec3(.30, .23, .16), vec3(.12, .085, .055), wet) * (.8 + .4 * fine), mudM);
-        diffuseColor.rgb = mix(diffuseColor.rgb, dirtCol, dMask);
-        // espuma activa: capa blanca de burbujas que se escurre hacia abajo
-        float fl = fbm(vec3(vDPos.x * 5.0, vDPos.y * 2.2 + uTime * .12, vDPos.z * 5.0));
-        float fl2 = fl + uFoam * .75 - .5 + up * .18;
-        fMask = smoothstep(.45, .6, fl2) * step(.001, uFoam);
-        float fThick = smoothstep(.6, .85, fl2);          // donde es fina deja ver la suciedad de debajo
-        float bub = mix(.5, n3(vDPos * 140.0), aaB), bub2 = mix(.5, n3(vDPos * 55.0 + 3.0), aaB2);
-        vec3 foamCol = vec3(.9, .94, 1.0) * (.7 + .18 * bub + .12 * bub2);
-        diffuseColor.rgb = mix(diffuseColor.rgb, foamCol, fMask * (.5 + .5 * fThick));
-        hgt = dMask * (fine * .6 + grain * .4) * .0016 + fMask * (bub * .6 + bub2 * .4) * (.001 + .002 * fThick);
-        }`)
-      .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(mix(roughnessFactor, mix(.95, .4, wet), dMask), .5, fMask);')
-      .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor = mix(metalnessFactor, 0.0, max(dMask, fMask));')
-      // relieve del barro y de las burbujas (misma fórmula que el bump map de three)
-      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-        { vec3 sX = dFdx(-vViewPosition), sY = dFdy(-vViewPosition);
-          vec3 R1 = cross(sY, normal), R2 = cross(normal, sX);
-          float det = dot(sX, R1) * faceDirection;
-          normal = normalize(abs(det) * normal - sign(det) * (dFdx(hgt) * R1 + dFdy(hgt) * R2)); }`)
-      .replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n#ifdef USE_CLEARCOAT\nmaterial.clearcoat *= 1.0 - max(dMask, fMask);\n#endif');
-  };
-  return mat;
-}
-
-// ---------- Partículas: espuma, vapor y destellos ----------
-function particles(n, { color, soft, additive, size }) {
-  const g = new THREE.BufferGeometry();
-  const pos = new Float32Array(n * 3), a = new Float32Array(n * 2); // a = (tamaño actual, alfa)
-  g.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
-  g.setAttribute('aSA', new THREE.BufferAttribute(a, 2).setUsage(THREE.DynamicDrawUsage));
-  const m = new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, fog: false,
-    blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
-    uniforms: { uC: { value: new THREE.Color(color) }, uPR: { value: pr * H } },
-    vertexShader: `attribute vec2 aSA; varying float vA; uniform float uPR;
-      void main(){ vec4 mv = modelViewMatrix * vec4(position,1.); vA = aSA.y; gl_PointSize = aSA.x * uPR / -mv.z; gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: `uniform vec3 uC; varying float vA;
-      void main(){ vec2 c = gl_PointCoord - .5; float d = length(c); if(d > .5) discard;
-        ${soft ? 'float al = smoothstep(.5, 0., d);' : 'float al = smoothstep(.5,.42,d) * (.55 + .45 * smoothstep(.2,.45,d)) + smoothstep(.16,.0,length(c+vec2(.15,.15)))*.8;'}
-        gl_FragColor = vec4(uC, al * vA); }`
-  });
-  const pts = new THREE.Points(g, m);
-  pts.frustumCulled = false;
-  scene.add(pts);
-  const p = Array.from({ length: n }, () => ({ x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, life: 0, max: 1 }));
-  let next = 0;
-  return {
-    mat: m,
-    spawn(x, y, z, vx, vy, vz, max) { const q = p[next]; next = (next + 1) % n; Object.assign(q, { x, y, z, vx, vy, vz, life: max, max }); },
-    update(dt) {
-      for (let i = 0; i < n; i++) {
-        const q = p[i];
-        if (q.life <= 0) { a[i * 2 + 1] = 0; continue; }
-        q.life -= dt; q.x += q.vx * dt; q.y += q.vy * dt; q.z += q.vz * dt;
-        const t = 1 - q.life / q.max; // 0 → 1
-        pos[i * 3] = q.x; pos[i * 3 + 1] = q.y; pos[i * 3 + 2] = q.z;
-        a[i * 2] = size * (soft ? 0.4 + t * 1.6 : Math.min(1, t * 6));
-        a[i * 2 + 1] = Math.min(1, t * 8) * (1 - t) * (soft ? 0.1 : 0.95);
-      }
-      g.attributes.position.needsUpdate = true; g.attributes.aSA.needsUpdate = true;
-    }
-  };
-}
-const foam = particles(1400, { color: 0xffffff, size: 0.09 });
-const steam = particles(320, { color: 0xd8dde4, soft: true, size: 1.6 });
-const glint = particles(120, { color: 0xd6e6ff, soft: true, additive: true, size: 0.12 });
-
-// ---------- Coche ----------
-const INTERIOR = /leather|interior|carpet|steering/i;
-const extPts = [], intPts = []; // puntos de superficie para colocar la espuma
-let glassMat, ready = false;
-
-// Coche comprimido con Draco (2 MB). Si el navegador no deja ejecutar WebAssembly, se usa la copia sin comprimir (10 MB).
-const bar = document.querySelector('#loader i'), progress = (p) => { bar.style.width = p * 100 + '%'; };
-let wasmOK = false;
-try { new WebAssembly.Module(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0])); wasmOK = true; } catch {}
-// (si el decodificador se cuelga, a los 12 s se pasa también a la copia sin comprimir)
-const timeout = (ms) => new Promise((_, fail) => setTimeout(() => fail(new Error('timeout')), ms));
-let gltf = null;
-if (wasmOK) {
-  window.__stage = 'download';
-  const bytes = await b64Bytes('ferrari-draco.txt', progress);
-  window.__stage = 'decode';
-  gltf = await Promise.race([new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath('draco/')).parseAsync(bytes, './'), timeout(12000)]).catch(() => null);
-}
-if (!gltf) {
-  window.__stage = 'big model' + (wasmOK ? ' (decoder failed)' : ' (no wasm)');
-  gltf = await new GLTFLoader().parseAsync(await b64Bytes('ferrari-glb.txt', progress), './');
-}
-window.__stage = 'scene';
-{
-  const car = gltf.scene.children[0];
-  car.traverse((o) => {
-    if (!o.isMesh) return;
-    const name = o.name;
-    if (name === 'glass') {
-      glassMat = o.material = new THREE.MeshPhysicalMaterial({ color: 0x0a0a0a, metalness: 0.9, roughness: 0.04, transparent: true, opacity: 0.55 });
-      return;
-    }
-    const inside = INTERIOR.test(name);
-    if (name === 'body') o.material = new THREE.MeshPhysicalMaterial({ color: 0xf4f2ee, metalness: 0.35, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.03 });
-    else o.material = o.material.clone();
-    dirty(o.material, inside ? intDirt : extDirt, inside ? intFoam : extFoam, inside ? 0.7 : 0.85);
-    o.castShadow = o.receiveShadow = true;
-    o.material.envMapIntensity = 0.55; // el HDRI de estudio es muy luminoso; así no se quema el blanco
-    if (name === 'body' || inside) {
-      o.updateWorldMatrix(true, false);
-      const P = o.geometry.attributes.position, N = o.geometry.attributes.normal, v = new THREE.Vector3(), nn = new THREE.Vector3();
-      const nm = new THREE.Matrix3().getNormalMatrix(o.matrixWorld);
-      const list = inside ? intPts : extPts;
-      for (let i = 0; i < 2500; i++) {
-        const k = (Math.random() * P.count) | 0;
-        v.fromBufferAttribute(P, k).applyMatrix4(o.matrixWorld);
-        nn.fromBufferAttribute(N, k).applyMatrix3(nm).normalize();
-        if (!inside && nn.y < -0.3) continue; // la espuma no cuelga de los bajos
-        list.push(v.x + nn.x * 0.02, v.y + nn.y * 0.02, v.z + nn.z * 0.02);
-      }
-    }
-  });
-  // sombra de contacto que trae el propio modelo
-  const ao = new THREE.Mesh(new THREE.PlaneGeometry(0.655 * 4, 1.3 * 4),
-    new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('ferrari_ao.png'), blending: THREE.MultiplyBlending, toneMapped: false, transparent: true }));
-  ao.rotation.x = -Math.PI / 2; ao.position.y = 0.002; ao.renderOrder = 2;
-  car.add(ao);
-  scene.add(car);
-  renderer.shadowMap.needsUpdate = true;
-  loadStudio();
-  ready = true;
-  document.getElementById('loader').classList.add('done');
-  document.documentElement.classList.remove('no3d'); // por si la red de seguridad saltó antes en una conexión lenta
-  if (!VIDEO) document.documentElement.classList.add('go'); // arranca la entrada de los textos de la portada
-}
-
-// ---------- Guion del scroll: una parada por sección ----------
-// La cámara da un solo giro lento alrededor del coche, de su frente derecho hacia atrás (unos 100° en toda la página):
-// az = ángulo alrededor del coche (0 = detrás, 180 = delante), el = altura en grados, d = distancia, look = a dónde mira
-// ext/int = suciedad, glass = opacidad de los cristales
-const K = [
-  { az: 130, el: 1.3, d: 10.4, look: [0, 2.3, 0], ext: 1, int: 1, glass: 0.55 },     // portada: sucio, coche abajo (deja sitio a los textos)
-  { az: 115, el: 10, d: 9.8, look: [0, 0.5, 0], ext: 0.6, int: 1, glass: 0.55 },     // basic: se va el polvo
-  { az: 98, el: 14, d: 9.8, look: [0, 0.45, 0], ext: 0, int: 1, glass: 0.55 },       // premium exterior: limpio por fuera
-  { az: 82, el: 34, d: 9.1, look: [0, 0.5, -0.1], ext: 0, int: 0.35, glass: 0 },    // premium interior: desde arriba se ve la cabina
-  { az: 64, el: 12, d: 9.8, look: [0, 0.45, 0], ext: 0, int: 0, glass: 0.55 },       // finishing: perfecto
-  { az: 46, el: 8, d: 9.4, look: [0, 0.45, 0], ext: 0, int: 0, glass: 0.55 },        // cerámico
-  { az: 30, el: 16, d: 10.8, look: [0, 0.35, 0], ext: 0, int: 0, glass: 0.55 },         // reservar
-];
-const DEG = Math.PI / 180;
-const lerp = (a, b, t) => a + (b - a) * t;
-const ease = (t) => t * t * (3 - 2 * t);
-const sections = [...document.querySelectorAll('main section')];
-let target = 0, cur = 0;
-const readScroll = () => {
-  // índice fraccional: 1.0 = la segunda sección ocupa la pantalla
-  const y = scrollY + innerHeight * 0.5;
-  for (let i = 0; i < sections.length; i++) {
-    const s = sections[i], top = s.offsetTop, h = s.offsetHeight;
-    if (y < top + h || i === sections.length - 1) { target = Math.min(K.length - 1, Math.max(0, i - 0.5 + (y - top) / h)); return; }
-  }
-};
-addEventListener('scroll', readScroll, { passive: true });
-readScroll(); cur = target;
-
-
-// grabación: la entrada de los textos y el vídeo del logo empiezan justo con el primer fotograma
-window.__start = () => { document.documentElement.classList.add('go'); window.__resetVideos?.(); };
-
-const camPos = new THREE.Vector3(), look = new THREE.Vector3();
-const pctEl = document.getElementById('pct'), barEl = document.getElementById('bar');
-let lastExt = 1, lastInt = 1, time = 0, last = performance.now(), shownPct = -1;
-
-function frame(now) {
-  const dt = Math.min(0.05, (now - last) / 1000); last = now; time += dt;
-  cur += (target - cur) * (1 - Math.exp(-dt * 3)); // suavizado lento e independiente de los Hz de la pantalla
-
-  const i = Math.min(K.length - 2, Math.floor(cur)), t = ease(cur - i), A = K[i], B = K[i + 1];
-  look.set(lerp(A.look[0], B.look[0], t), lerp(A.look[1], B.look[1], t), lerp(A.look[2], B.look[2], t));
-  const az = lerp(A.az, B.az, t) * DEG, el = lerp(A.el, B.el, t) * DEG;
-  const inside = Math.max(0, 1 - Math.abs(cur - 3)); // 1 en la parada del interior
-  // en vertical (móvil) se aleja para que quepa el coche (algo menos en el interior)
-  const portrait = Math.max(1, (mobile ? 1.1 : 1.3) / camera.aspect);
-  const away = 1 + (portrait - 1) * (1 - 0.4 * inside);
-  camPos.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(lerp(A.d, B.d, t) * away).add(look);
-  scene.fog.near = 9 * away; scene.fog.far = 20 * away; // la niebla se aleja con la cámara, si no tapa el coche
-  camera.position.copy(camPos); camera.lookAt(look);
-  // en vertical el coche sube a la mitad de arriba y deja la de abajo a las tarjetas
-  // (en la portada y al final no hay tarjeta que esquivar, así que vuelve al centro)
-  const oy = camera.aspect < 0.9 ? H * 0.2 * Math.min(1, cur) * (1 - Math.min(1, Math.max(0, cur - 5))) : 0;
-  camera.setViewOffset(W, H, 0, oy, W, H);
-  camera.updateProjectionMatrix();
-  key.intensity = 60 - inside * 25; // algo menos de luz cenital sobre la cabina para que no se queme
-
-  const ext = lerp(A.ext, B.ext, t), int = lerp(A.int, B.int, t);
-  extDirt.value = ext; intDirt.value = int;
-  // la espuma sube a mitad de cada tramo de lavado y se escurre al llegar a la sección
-  const wave = Math.sin(Math.PI * (cur - i));
-  extFoam.value = A.ext !== B.ext ? wave * 0.95 : 0;
-  intFoam.value = A.int !== B.int ? wave * 0.5 : 0;
-  uTime.value = time;
-  if (glassMat) { glassMat.opacity = lerp(A.glass, B.glass, t); glassMat.visible = glassMat.opacity > 0.02; }
-
-  if (ready) {
-    // espuma y vapor en proporción a lo que se ha limpiado este frame
-    const dE = Math.abs(ext - lastExt), dI = Math.abs(int - lastInt);
-    for (let n = Math.min(25, dE * 900 | 0); n--;) {
-      const k = (Math.random() * extPts.length / 3 | 0) * 3;
-      foam.spawn(extPts[k], extPts[k + 1], extPts[k + 2], 0, -0.06, 0, 1.4 + Math.random() * 1.4);
-    }
-    for (let n = Math.min(40, dI * 2000 | 0); n--;) {
-      const k = (Math.random() * intPts.length / 3 | 0) * 3;
-      foam.spawn(intPts[k], intPts[k + 1], intPts[k + 2], 0, -0.02, 0, 1 + Math.random());
-    }
-    for (let n = Math.min(6, (dE + dI) * 300 | 0); n--;) {
-      const r = 2.2 + Math.random(), th = Math.random() * 6.283;
-      const fromCab = dI > dE;
-      steam.spawn(fromCab ? (Math.random() - 0.5) * 0.8 : Math.cos(th) * r * 0.6, fromCab ? 0.6 : 0.1, fromCab ? (Math.random() - 0.5) * 1.2 : Math.sin(th) * r,
-        (Math.random() - 0.5) * 0.2, 0.35 + Math.random() * 0.3, (Math.random() - 0.5) * 0.2, 2.5 + Math.random() * 2);
-    }
-    // destellos cuando ya está impecable
-    const clean = 1 - Math.max(ext, int);
-    if (clean > 0.97 && Math.random() < 0.5 * clean) {
-      const k = (Math.random() * extPts.length / 3 | 0) * 3;
-      glint.spawn(extPts[k], extPts[k + 1], extPts[k + 2], 0, 0, 0, 0.6 + Math.random() * 0.6);
-    }
-  }
-  lastExt = ext; lastInt = int;
-  foam.update(dt); steam.update(dt); glint.update(dt);
-
-  const shine = Math.max(0, 1 - Math.max(0, Math.abs(cur - 4.5) - 0.5) * 1.5); // finishing y cerámico
-  sweep.intensity = shine * 5;
-  sweep.position.set(Math.sin(time * 0.8) * 2.4, 2.0, Math.cos(time * 0.8) * 1.2 - 0.4);
-  bloom.strength = 0.2 + shine * 0.08;
-
-  const pct = Math.round((ext * 0.6 + int * 0.4) * 100); // el exterior pesa más que el interior
-  if (pct !== shownPct) { shownPct = pct; pctEl.textContent = pct + '%'; barEl.style.width = pct + '%'; }
-
-  composer.render();
-
-  // resolución dinámica: si el móvil va por debajo de ~45 fps durante 1 s, se baja la resolución un escalón
-  slowT += dt; slowN++;
-  if (slowT > 1) {
-    // (los 3 primeros segundos no cuentan: ahí se compilan los shaders)
-    if (!VIDEO && time > 3 && slowT / slowN > 1 / 45 && pr > 1 && !document.hidden) { pr = Math.max(1, pr - 0.2); resize(true); }
-    slowT = slowN = 0;
-  }
-  requestAnimationFrame(frame);
-}
-let slowT = 0, slowN = 0;
-requestAnimationFrame(frame);
-
-function resize(force) {
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  if (!force && w === W && h === H) return; // la barra del navegador del móvil no cambia el lienzo (100lvh)
-  W = w; H = h;
-  camera.aspect = W / H;
-  renderer.setPixelRatio(pr); composer.setPixelRatio(pr);
-  renderer.setSize(W, H, false); composer.setSize(W, H);
-  foam.mat.uniforms.uPR.value = steam.mat.uniforms.uPR.value = glint.mat.uniforms.uPR.value = pr * H;
-}
-addEventListener('resize', () => { resize(false); readScroll(); });
 </script>
 </body>
 </html>
