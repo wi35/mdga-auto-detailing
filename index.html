@@ -419,12 +419,12 @@ body:has(#work[open]){overflow:hidden}
 (() => {
   const root = document.documentElement, still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // intro con el logo: una vez por visita, se salta tocando
-  const intro = document.getElementById('intro');
+  // intro con el logo: una vez por visita, se salta tocando (?video = la quita video.mjs con __hideIntro)
+  const intro = document.getElementById('intro'), VIDEO = new URLSearchParams(location.search).has('video');
   let seen = false;
   try { seen = sessionStorage.getItem('mdga-intro') === '1'; sessionStorage.setItem('mdga-intro', '1'); } catch {}
-  const hideIntro = () => { intro.classList.add('gone'); setTimeout(() => intro.remove(), 900); };
-  if (seen || still) intro.remove(); else { intro.addEventListener('click', hideIntro); setTimeout(hideIntro, 2600); }
+  const hideIntro = window.__hideIntro = () => { intro.classList.add('gone'); setTimeout(() => intro.remove(), 900); };
+  if (VIDEO) {} else if (seen || still) intro.remove(); else { intro.addEventListener('click', hideIntro); setTimeout(hideIntro, 2600); }
 
   // aparición en cascada al hacer scroll y precios que cuentan desde 0
   const countUp = (el) => {
