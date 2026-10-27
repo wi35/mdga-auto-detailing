@@ -31,3 +31,5 @@ video.mjs
 play.mjs
 dbg.mjs
 pistola.webp
+!game/
+!game/*.webp
