@@ -181,6 +181,9 @@ footer{border-top:1px solid var(--line);padding-block:56px 28px;background:var(-
 .foot ul a:hover{color:var(--ink)}
 .foot .phone{display:inline-block;margin-top:16px;font-family:var(--display);font-weight:700;font-size:22px;color:var(--ink);text-decoration:none}
 .legal{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:#6f7a8f}
+/* el enlace escondido al minijuego: solo "MDGA", pequeño y apagado, en la esquina derecha del final de la página */
+.egg{font-family:var(--display);font-weight:800;letter-spacing:.22em;font-size:12px;color:rgba(111,122,143,.45);text-decoration:none;transition:color .3s,text-shadow .3s}
+.egg:hover,.egg:focus-visible{color:var(--accent2);text-shadow:0 0 18px rgba(47,123,255,.6)}
 
 /* pestaña "Our Work" */
 #work{margin:auto;width:min(1100px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:28px;border:1px solid var(--line);border-radius:26px;color:var(--ink);background:linear-gradient(160deg,var(--card2),var(--bg));box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:auto}
@@ -399,7 +402,7 @@ body:has(#work[open]){overflow:hidden}
       <div><h4>Contact</h4><ul><li><a href="https://wa.me/15616284360" target="_blank" rel="noopener">WhatsApp</a></li><li><a href="tel:+15616284360">Call us</a></li><li><a href="mailto:servicesmdga@gmail.com">servicesmdga@gmail.com</a></li><li><a href="#work" data-open-work>Our Work</a></li></ul></div>
       <div><h4>Follow Us</h4><ul><li><a href="https://www.instagram.com/mdgaautodetailing" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://www.tiktok.com/@mdga.services" target="_blank" rel="noopener">TikTok</a></li><li><a href="https://www.youtube.com/@mdgaautodetailing" target="_blank" rel="noopener">YouTube</a></li><li><a href="https://share.google/FrebNPnN8X6JFbi1k" target="_blank" rel="noopener">Google</a></li></ul></div>
     </div>
-    <div class="legal"><span>© 2026 MDGA Auto Detailing. All rights reserved.</span><span>Photos: Unsplash</span></div>
+    <div class="legal"><span>© 2026 MDGA Auto Detailing. All rights reserved.</span><span>Photos: Unsplash</span><a class="egg" href="wash.html" aria-label="MDGA">MDGA</a></div>
   </div>
 </footer>
 

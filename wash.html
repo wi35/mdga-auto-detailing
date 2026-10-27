@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MDGA Pressure Wash</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@600;700;800&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<style>
+/* Prototipo del minijuego oculto: un "MDGA" discreto al final de la página abre "MDGA Pressure Wash". Diseño solo oscuro, a propósito. */
+:root{color-scheme:dark;--bg:#0a0f1a;--ink:#eef2f8;--mute:#a9b4c7;--accent:#2f7bff;--accent2:#7db6ff;--line:rgba(148,180,255,.16);
+  --display:"Saira",Manrope,system-ui,sans-serif;--body:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100%}
+button{font:inherit;color:inherit}
+
+/* página de muestra: solo explica dónde está el enlace escondido */
+.demo{max-width:640px;margin:0 auto;padding:max(56px,8vh) max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));min-height:140vh}
+.demo small{font-family:var(--display);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);font-size:13px}
+.demo h1{font-family:var(--display);font-weight:800;font-size:clamp(36px,7vw,60px);line-height:1.05;margin:12px 0 16px}
+.demo p{color:var(--mute);font-size:18px;line-height:1.6}
+.demo .arrow{margin-top:28px;font-family:var(--display);font-weight:700;color:var(--accent2);letter-spacing:.1em;text-transform:uppercase}
+
+/* el enlace escondido: solo "MDGA", pequeño y apagado, al final de la página en la esquina derecha */
+.end{max-width:640px;margin:0 auto;padding:24px max(20px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px));text-align:right}
+#egg{display:inline-block;font-family:var(--display);font-weight:800;letter-spacing:.22em;font-size:12px;color:rgba(169,180,199,.35);text-decoration:none;padding:8px 2px;transition:color .3s,text-shadow .3s}
+#egg:hover,#egg:focus-visible{color:var(--accent2);text-shadow:0 0 18px rgba(47,123,255,.6)}
+
+/* el juego: solo en vertical (9:16, pensado para el teléfono), centrado, con bandas negras si la pantalla no lo es */
+#game{position:fixed;inset:0;z-index:100;background:#000;display:none;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+#game.on{display:block;animation:fade .45s ease}
+@keyframes fade{from{opacity:0}}
+#frame{position:absolute;inset:0;margin:auto;width:min(100vw,calc(100vh * 9 / 16));height:min(100vh,calc(100vw * 16 / 9));background:#04060b;overflow:hidden;container-type:size;cursor:none}
+/* tres capas: la escena (2D), la pistola en 3D en primera persona (WebGL) y el agua encima (2D) */
+#cv,#gl,#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+/* la interfaz se escala con el marco (cqh/cqw) para que quepa igual en un teléfono que en la franja vertical de un ordenador */
+.hud{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:clamp(6px,2cqh,12px);pointer-events:none;padding:clamp(6px,2.5cqh,12px) clamp(8px,2cqw,14px);
+  background:linear-gradient(rgba(4,6,11,.9),rgba(4,6,11,.55) 70%,rgba(4,6,11,0))}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;letter-spacing:.06em;font-size:clamp(11px,4cqh,16px)}
+.brand img{width:clamp(22px,8cqh,36px);height:clamp(22px,8cqh,36px);border-radius:9px;object-fit:cover}
+.meter{flex:1;max-width:340px;margin-left:auto;display:grid;gap:clamp(2px,1cqh,5px)}
+.meter span{display:flex;justify-content:space-between;font-family:var(--display);font-weight:700;font-size:clamp(8px,3cqh,13px);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.meter b{color:var(--ink);font-variant-numeric:tabular-nums}
+.bar{height:clamp(4px,1.6cqh,8px);border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#1f5fe6,#7db6ff);box-shadow:0 0 14px rgba(47,123,255,.7)}
+.time{font-family:var(--display);font-weight:800;font-size:clamp(12px,5cqh,20px);font-variant-numeric:tabular-nums;min-width:3.2em;text-align:right}
+.icon{pointer-events:auto;width:clamp(28px,9cqh,44px);height:clamp(28px,9cqh,44px);border-radius:12px;border:1px solid var(--line);background:rgba(10,15,26,.7);display:grid;place-items:center;cursor:pointer}
+.icon svg{width:45%;height:45%;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.icon:hover,.icon:focus-visible{border-color:var(--accent)}
+.panel{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;padding:16px}
+.card{pointer-events:auto;text-align:center;max-width:min(430px,92cqw);padding:clamp(10px,5cqh,30px) clamp(12px,4cqw,26px);border-radius:clamp(12px,4cqh,24px);background:rgba(8,12,22,.86);border:1px solid var(--line);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .5s cubic-bezier(.2,.8,.2,1);cursor:default}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.96)}}
+.card small{font-family:var(--display);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);font-size:clamp(8px,3cqh,13px)}
+.card h2{font-family:var(--display);font-weight:800;font-size:clamp(17px,9cqh,42px);line-height:1.05;margin:clamp(4px,1.5cqh,10px) 0 clamp(4px,2cqh,12px)}
+.card p{color:var(--mute);font-size:clamp(11px,4cqh,17px);line-height:1.45}
+.card .big{font-family:var(--display);font-weight:800;font-size:clamp(26px,13cqh,54px);color:#fff;margin:6px 0 2px;text-shadow:0 0 24px rgba(47,123,255,.6)}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:clamp(8px,4cqh,22px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:clamp(32px,10cqh,50px);padding:0 clamp(14px,4cqw,24px);border-radius:12px;border:1px solid transparent;font-weight:700;font-size:clamp(12px,4cqh,16px);text-decoration:none;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,#4b8dff,#1f5fe6);box-shadow:0 10px 30px -10px rgba(47,123,255,.6)}
+.btn.ghost{background:rgba(255,255,255,.05);border-color:var(--line);box-shadow:none}
+.hint{position:absolute;left:50%;bottom:clamp(8px,4cqh,22px);transform:translateX(-50%);font-family:var(--display);font-weight:700;font-size:clamp(9px,3.2cqh,14px);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);pointer-events:none;transition:opacity .5s}
+.rotate{position:absolute;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);white-space:nowrap;font-size:13px;color:var(--mute);pointer-events:none}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){#game.on,.card{animation:none}}
+</style>
+</head>
+<body>
+
+<section id="game" aria-label="MDGA Pressure Wash mini game" hidden>
+  <div id="frame">
+    <canvas id="cv"></canvas>
+    <canvas id="gl"></canvas>
+    <canvas id="fx"></canvas>
+    <div class="hud">
+      <div class="brand"><img src="icon.png" alt=""><span>MDGA</span></div>
+      <div class="meter"><span>Clean <b id="pct">0%</b></span><div class="bar"><i id="fill"></i></div></div>
+      <div class="time" id="time">0.0s</div>
+      <button class="icon" id="close" type="button" aria-label="Close game"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="hint" id="hint">Hold to spray</div>
+    <div class="panel" id="startPanel"><div class="card">
+      <small>Hidden Challenge</small>
+      <h2>Pressure Wash the Mud Off</h2>
+      <p>Hold down and move to aim. Blast every bit of mud off this luxury sports car as fast as you can.</p>
+      <div class="btns"><button class="btn" id="start" type="button">Start</button></div>
+    </div></div>
+    <div class="panel" id="winPanel" hidden><div class="card">
+      <small>Spotless</small>
+      <h2>Showroom Shine!</h2>
+      <div class="big" id="final">0.0s</div>
+      <p id="best">Your time</p>
+      <div class="btns">
+        <a class="btn" href="https://wa.me/15616284360?text=Hi%20MDGA%2C%20I%20played%20your%20pressure%20wash%20game%20and%20I%27d%20like%20a%20real%20detail%21" target="_blank" rel="noopener">Get the Real Thing</a>
+        <button class="btn ghost" id="again" type="button">Play Again</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="rotate" id="rotateHint" hidden>Turn your phone upright for a bigger game ⟳</div>
+</section>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+// ---------- la escena: render 3D del estudio con el coche, limpio y con barro (mismo encuadre) + silueta del coche ----------
+// Todo va en píxeles de la imagen (IMG); el chorro borra la versión con barro y deja ver la limpia de debajo.
+const IMG = {"w":2160,"h":3840,"hose":[2641,2120]};
+const game = document.getElementById('game'), frame = document.getElementById('frame');
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d'), fxc = document.getElementById('fx'), fx = fxc.getContext('2d');
+const layer = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+// las capas de trabajo se crean al abrir, al tamaño que pide la pantalla (en 4K solo si la pantalla es 4K)
+const dirt = layer(1, 1), comp = layer(1, 1), sweep = layer(1, 1);
+const dctx = dirt.getContext('2d'), cctx = comp.getContext('2d'), sctx = sweep.getContext('2d');
+const MW = 108, MH = 192, probe = layer(MW, MH), pctx = probe.getContext('2d', { willReadFrequently: true });
+const load = (src) => { const im = new Image(); im.src = src; return im; };
+let cleanImg = load('game/escena-limpia.webp'), dirtyImg = load('game/escena-sucia.webp'), matteImg = load('game/escena-silueta.webp');
+let cleanBm, dirtyBm, matteBm, LS = 0;
+
+// silueta del coche a baja resolución: para saber si el agua da en el coche y medir el barro
+let mask, car = { x0: 0, y0: 0, x1: IMG.w, y1: IMG.h }, U = 1;
+const ready = Promise.all([cleanImg.decode(), dirtyImg.decode(), matteImg.decode()]).then(() => {
+  pctx.drawImage(matteImg, 0, 0, MW, MH); mask = pctx.getImageData(0, 0, MW, MH).data;
+  let x0 = MW, y0 = MH, x1 = 0, y1 = 0;
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) if (mask[(y * MW + x) * 4 + 3] > 100) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  const k = IMG.w / MW; car = { x0: x0 * k, y0: y0 * k, x1: (x1 + 1) * k, y1: (y1 + 1) * k };
+  U = (car.x1 - car.x0) / 850; // 1 unidad = 1/850 del ancho del coche en la imagen (tamaños del chorro y las gotas)
+});
+// capas al tamaño de la pantalla: la imagen 4K se reduce una sola vez y todo se sigue dibujando en píxeles de la imagen
+async function makeLayers() {
+  const cap = matchMedia('(pointer: coarse)').matches ? .55 : 1; // en el móvil, como mucho 2K: va fluido y no se come la memoria
+  LS = Math.min(1, cap, s * dpr); const LW = Math.round(IMG.w * LS), LH = Math.round(IMG.h * LS);
+  for (const k of [dirt, comp, sweep]) { k.width = LW; k.height = LH; k.getContext('2d').setTransform(LS, 0, 0, LS, 0, 0); }
+  const bm = async (im) => { try { return await createImageBitmap(im, { resizeWidth: LW, resizeHeight: LH, resizeQuality: 'high' }); } catch { return im; } };
+  [cleanBm, dirtyBm, matteBm] = await Promise.all([cleanImg, dirtyImg, matteImg].map(bm));
+  if (cleanBm !== cleanImg) cleanImg = dirtyImg = matteImg = null; // las imágenes grandes ya no hacen falta
+}
+const onCar = (ix, iy) => {
+  const x = Math.floor(ix / IMG.w * MW), y = Math.floor(iy / IMG.h * MH);
+  return !!mask && x >= 0 && y >= 0 && x < MW && y < MH && mask[(y * MW + x) * 4 + 3] > 100;
+};
+const resetDirt = () => { dctx.globalCompositeOperation = 'source-over'; dctx.clearRect(0, 0, IMG.w, IMG.h); dctx.drawImage(dirtyBm, 0, 0, IMG.w, IMG.h); };
+let baseline = 1;
+const dirtLeft = () => { // píxeles del coche donde aún queda barro
+  pctx.clearRect(0, 0, MW, MH); pctx.drawImage(dirt, 0, 0, MW, MH);
+  const d = pctx.getImageData(0, 0, MW, MH).data; let n = 0;
+  for (let i = 3; i < d.length; i += 4) if (d[i] > 60 && mask[i] > 100) n++; // la película casi invisible no cuenta
+  return n;
+};
+const compose = () => { cctx.drawImage(cleanBm, 0, 0, IMG.w, IMG.h); cctx.drawImage(dirt, 0, 0, IMG.w, IMG.h); };
+
+// ---------- pantalla: el marco es 9:16 (vertical), la imagen lo llena exacto ----------
+let dpr = 1, cw = 0, ch = 0, s = 1, ox = 0, oy = 0;
+function fit() {
+  dpr = Math.min(devicePixelRatio || 1, 2); cw = frame.clientWidth; ch = frame.clientHeight;
+  for (const k of [cv, fxc]) { k.width = Math.round(cw * dpr); k.height = Math.round(ch * dpr); }
+  s = cw / IMG.w; ox = 0; oy = (ch - IMG.h * s) / 2;
+  renderer.setPixelRatio(dpr); renderer.setSize(cw, ch, false); gcam.aspect = cw / ch; gcam.updateProjectionMatrix();
+  rotateHint.hidden = !(innerWidth > innerHeight && innerHeight < 500); // teléfono apaisado
+}
+const toImg = (x, y) => [(x - ox) / s, (y - oy) / s];
+const toScreen = (x, y) => [ox + x * s, oy + y * s];
+
+// ---------- la pistola en primera persona: un modelo 3D que se mueve con el dedo, como en un juego POV ----------
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gl'), alpha: true, antialias: true, powerPreference: 'high-performance' });
+renderer.setClearColor(0x000000, 0); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+const gscene = new THREE.Scene(), gcam = new THREE.PerspectiveCamera(64, 9 / 16, 0.02, 20);
+{ // luz: la sala en pequeño (techo luminoso, tira azul, relleno) para que el cromo y el plástico reflejen algo creíble
+  const env = new THREE.Scene(); env.background = new THREE.Color(0x0c0e12);
+  const panel = (w, h, rgb, pos, look) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(...rgb), side: THREE.DoubleSide })); m.position.set(...pos); m.lookAt(...look); env.add(m); };
+  panel(12, 12, [2.0, 2.05, 2.2], [0, 3, 0], [0, 0, 0]); panel(1, 20, [0.3, 0.8, 2.5], [-4, 0.2, 0], [0, 0.2, 0]); panel(6, 2, [0.5, 0.52, 0.6], [0, 1.5, 6], [0, 1, 0]);
+  const pm = new THREE.PMREMGenerator(renderer); gscene.environment = pm.fromScene(env, 0.04).texture; pm.dispose();
+  gscene.add(new THREE.HemisphereLight(0xdde6ff, 0x1a1c22, 0.8));
+  const dl = new THREE.DirectionalLight(0xffffff, 1.6); dl.position.set(0.6, 2, 1); gscene.add(dl);
+}
+const yellowMap = (() => { // plástico amarillo con desgaste, como la máquina del fondo
+  const k = layer(512, 512), g = k.getContext('2d'); g.fillStyle = '#dcae00'; g.fillRect(0, 0, 512, 512);
+  g.filter = 'blur(8px)'; for (let i = 0; i < 30; i++) { g.fillStyle = `rgba(${Math.random() < .6 ? '40,30,10' : '255,240,200'},${.03 + Math.random() * .05})`; g.beginPath(); g.ellipse(Math.random() * 512, Math.random() * 512, 20 + Math.random() * 80, 10 + Math.random() * 45, Math.random() * 3, 0, 7); g.fill(); }
+  g.filter = 'none'; for (let i = 0; i < 60; i++) { g.strokeStyle = `rgba(${Math.random() < .5 ? '0,0,0' : '255,255,255'},${.06 + Math.random() * .1})`; g.lineWidth = .5 + Math.random(); g.beginPath(); const x = Math.random() * 512, y = Math.random() * 512; g.moveTo(x, y); g.lineTo(x + (Math.random() - .5) * 60, y + (Math.random() - .5) * 20); g.stroke(); }
+  for (let i = 0; i < 15000; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * .06})`; g.fillRect(Math.random() * 512, Math.random() * 512, 1, 1); }
+  const t = new THREE.CanvasTexture(k); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const chrome = new THREE.MeshStandardMaterial({ color: 0xe8ebef, metalness: 1, roughness: 0.14 });
+const yellow = new THREE.MeshPhysicalMaterial({ map: yellowMap, roughness: 0.55, clearcoat: 0.35, clearcoatRoughness: 0.25 });
+const black = new THREE.MeshStandardMaterial({ color: 0x15171b, roughness: 0.5 });
+const rubber = new THREE.MeshStandardMaterial({ color: 0x0c0d0f, roughness: 0.85 });
+const brass = new THREE.MeshStandardMaterial({ color: 0xb08d3a, metalness: 1, roughness: 0.3 });
+// la pistola se construye con la lanza a lo largo de +x (como en el render) y luego se gira para apuntar hacia delante (-z)
+const gun = new THREE.Group();
+const part = (geo, mat, p, r = [0, 0, 0]) => { const m = new THREE.Mesh(geo, mat); m.position.set(...p); m.rotation.set(...r); gun.add(m); return m; };
+part(new THREE.CylinderGeometry(0.011, 0.011, 0.74, 24), chrome, [0.57, 0.012, 0], [0, 0, Math.PI / 2]);   // lanza
+part(new THREE.CylinderGeometry(0.016, 0.016, 0.05, 24), brass, [0.92, 0.012, 0], [0, 0, Math.PI / 2]);    // conexión rápida
+part(new THREE.CylinderGeometry(0.017, 0.013, 0.07, 24), black, [0.985, 0.012, 0], [0, 0, Math.PI / 2]);   // boquilla
+part(new THREE.CylinderGeometry(0.02, 0.02, 0.06, 24), black, [0.23, 0.012, 0], [0, 0, Math.PI / 2]);      // tuerca
+part(new RoundedBoxGeometry(0.24, 0.075, 0.05, 4, 0.016), yellow, [0.1, 0.012, 0]);                        // cuerpo
+part(new RoundedBoxGeometry(0.2, 0.03, 0.054, 3, 0.01), rubber, [0.1, 0.03, 0]);                            // inserto negro
+part(new RoundedBoxGeometry(0.065, 0.19, 0.045, 4, 0.014), yellow, [0.055, -0.1, 0], [0, 0, -0.28]);       // empuñadura
+part(new RoundedBoxGeometry(0.03, 0.16, 0.048, 3, 0.01), rubber, [0.07, -0.1, 0], [0, 0, -0.28]);          // goma
+part(new RoundedBoxGeometry(0.022, 0.15, 0.03, 3, 0.008), black, [0.1, -0.095, 0], [0, 0, -0.28]);         // gatillo
+part(new RoundedBoxGeometry(0.03, 0.02, 0.036, 2, 0.006), black, [0.125, -0.02, 0]);                       // seguro
+const GD = [Math.sin(-0.28), -Math.cos(-0.28)], GB = [0.055 + 0.095 * GD[0], -0.1 + 0.095 * GD[1]];       // eje y extremo de la empuñadura
+part(new THREE.CylinderGeometry(0.014, 0.014, 0.05, 20), chrome, [GB[0] + 0.025 * GD[0], GB[1] + 0.025 * GD[1], 0], [0, 0, -0.28]); // racor
+const hoseEnd = new THREE.Vector3(GB[0] + 0.05 * GD[0], GB[1] + 0.05 * GD[1], 0);
+part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([hoseEnd, hoseEnd.clone().add(new THREE.Vector3(-0.02, -0.08, 0.01)), hoseEnd.clone().add(new THREE.Vector3(-0.12, -0.22, 0.08)), hoseEnd.clone().add(new THREE.Vector3(-0.3, -0.4, 0.3))]), 32, 0.012, 10), rubber, [0, 0, 0]); // manguera hacia abajo y hacia ti
+const tip = new THREE.Object3D(); tip.position.set(1.02, 0.012, 0); gun.add(tip);                          // punto de salida del agua
+const nut = new THREE.Object3D(); nut.position.set(0.3, 0.012, 0); gun.add(nut);                           // otro punto de la lanza: da su dirección en pantalla
+gun.rotation.y = Math.PI / 2; // +x → -z: la lanza apunta hacia delante
+const rig = new THREE.Group(); rig.add(gun); gscene.add(rig);
+// en reposo: abajo a la derecha de la vista, la lanza hacia delante y un poco arriba (la boquilla queda hacia el centro-bajo de la pantalla)
+const REST = { x: 0.12, y: -0.33, z: -0.54, yaw: 0.14, pitch: 0.08 };
+let yaw = REST.yaw, pitch = REST.pitch, kick = 0;
+function poseGun(target, on, dt, now) {
+  // objetivo: el dedo; ángulos suaves (la pistola pesa) + retroceso y vibración mientras dispara
+  // la lanza apunta un poco por encima del objetivo: el agua sale recta y cae por su peso justo donde apuntas
+  const ty = REST.yaw + (cw / 2 - target[0]) / cw * 0.8, tp = REST.pitch + (ch * .6 - target[1]) / ch * 0.55 + 0.1;
+  const k = 1 - Math.exp(-dt * 14); yaw += (ty - yaw) * k; pitch += (tp - pitch) * k;
+  kick += ((on ? 1 : 0) - kick) * (1 - Math.exp(-dt * 20));
+  const vib = kick * 0.0025, t = now / 1000;
+  rig.position.set(REST.x + Math.sin(t * 73) * vib, REST.y + Math.sin(t * 61) * vib, REST.z + kick * 0.012);
+  rig.rotation.set(pitch + Math.sin(t * 57) * vib * 1.5, yaw + Math.sin(t * 67) * vib * 1.5, Math.sin(t * 43) * vib);
+  gscene.updateMatrixWorld();
+  const P = (o) => { const v = o.getWorldPosition(new THREE.Vector3()).project(gcam); return [(v.x + 1) / 2 * cw, (1 - v.y) / 2 * ch]; };
+  const a = P(tip), b = P(nut), d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1;
+  return { tip: a, dir: [(a[0] - b[0]) / d, (a[1] - b[1]) / d] };
+}
+// trayectoria del agua en pantalla: sale de la boquilla en la dirección de la lanza y cae hasta el punto de impacto (parábola)
+let jet = null;
+function makeJet(g, hit) {
+  const [x0, y0] = g.tip, [x2, y2] = hit, len = Math.hypot(x2 - x0, y2 - y0);
+  const x1 = x0 + g.dir[0] * len * 0.45, y1 = y0 + g.dir[1] * len * 0.45;
+  return { x0, y0, x1, y1, x2, y2, len, at: (q) => [(1 - q) * (1 - q) * x0 + 2 * (1 - q) * q * x1 + q * q * x2, (1 - q) * (1 - q) * y0 + 2 * (1 - q) * q * y1 + q * q * y2] };
+}
+
+// ---------- partículas (en píxeles de la imagen): salpicaduras, niebla, gotas que resbalan, hilos de agua, destellos ----------
+const parts = [];
+const spawn = (p) => { if (parts.length < 1400) parts.push(p); };
+
+// ---------- estado ----------
+let state = 'start', spraying = false, aim = null, t0 = 0, elapsed = 0, clean = 0, lastProbe = 0, winAt = 0, raf = 0;
+const pctEl = document.getElementById('pct'), fillEl = document.getElementById('fill'), timeEl = document.getElementById('time'), hint = document.getElementById('hint');
+const rotateHint = document.getElementById('rotateHint');
+const startPanel = document.getElementById('startPanel'), winPanel = document.getElementById('winPanel');
+
+function reset() {
+  resetDirt(); compose(); baseline = dirtLeft() || 1; clean = 0; elapsed = 0; t0 = 0; parts.length = 0;
+  pctEl.textContent = '0%'; fillEl.style.width = '0%'; timeEl.textContent = '0.0s'; hint.style.opacity = 1;
+}
+
+// ---------- el chorro: borra el barro justo donde golpea (poca dispersión: precisión); las salpicaduras caen con gravedad ----------
+function spray(ix, iy, dt) {
+  const g = dctx; g.save(); g.globalCompositeOperation = 'destination-out';
+  for (let i = 0; i < 4; i++) {
+    const x = ix + (Math.random() - .5) * 10 * U, y = iy + (Math.random() - .5) * 10 * U, r = (22 + Math.random() * 10) * U;
+    const gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, `rgba(0,0,0,${Math.min(1, 1.4 * dt * 60 / 4)})`); gr.addColorStop(.6, `rgba(0,0,0,${Math.min(1, .9 * dt * 60 / 4)})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  }
+  g.restore();
+  const hit = onCar(ix, iy);
+  for (let i = 0; i < 5; i++) { // salpicaduras: rebotan contra la chapa en abanico y caen
+    const a = -Math.PI / 2 + (Math.random() - .5) * 2.4, v = (2 + Math.random() * 5) * U;
+    spawn({ k: 'drop', x: ix, y: iy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, dec: .02 + Math.random() * .02, mud: hit && Math.random() < .35 });
+  }
+  if (Math.random() < .6) spawn({ k: 'mist', x: ix, y: iy, r: (12 + Math.random() * 18) * U, life: 1, dec: .018 });
+  if (hit && Math.random() < .5) spawn({ k: 'run', x: ix + (Math.random() - .5) * 40 * U, y: iy + Math.random() * 10 * U, vy: (.5 + Math.random() * .7) * U, life: 1, dec: .005 + Math.random() * .005 });
+  if (Math.random() < .2) spawn({ k: 'spark', x: ix + (Math.random() - .5) * 26 * U, y: iy + (Math.random() - .5) * 26 * U, life: 1, dec: .08 });
+}
+// hilos de agua que recorren la trayectoria del chorro (en pantalla), de la boquilla al impacto
+function streaks() {
+  for (let i = 0; i < 3; i++) spawn({ k: 'streak', q: 0, spd: .9 + Math.random() * .5, side: (Math.random() - .5), life: 1, dec: 0 });
+}
+
+// ---------- dibujo de cada fotograma ----------
+function drawScene(now) {
+  const c = ctx; c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.fillStyle = '#04060b'; c.fillRect(0, 0, cw, ch);
+  const w = IMG.w * s, h = IMG.h * s;
+  c.drawImage(comp, ox, oy, w, h);
+  if (state === 'win') { // destello final que recorre la pintura
+    const k = Math.min(1, (now - winAt) / 1300), x = car.x0 + (k * 1.3 - .15) * (car.x1 - car.x0), bw = (car.x1 - car.x0) * .09;
+    sctx.globalCompositeOperation = 'source-over'; sctx.clearRect(0, 0, IMG.w, IMG.h);
+    const gr = sctx.createLinearGradient(x - bw, 0, x + bw, 0);
+    gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, 'rgba(230,242,255,.55)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+    sctx.fillStyle = gr; sctx.fillRect(x - bw, 0, bw * 2, IMG.h);
+    sctx.globalCompositeOperation = 'destination-in'; sctx.drawImage(matteBm, 0, 0, IMG.w, IMG.h);
+    c.drawImage(sweep, ox, oy, w, h);
+  }
+}
+
+function drawParts(dt) {
+  const c = fx, px = s * U; // tamaño en pantalla de 1 unidad
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i]; p.life -= p.dec * dt * 60;
+    if (p.life <= 0) { parts.splice(i, 1); continue; }
+    const [sx, sy] = toScreen(p.x, p.y);
+    if (p.k === 'drop') { // gota: cae con gravedad, rebota un poco en el suelo
+      p.vy += .32 * U * dt * 60; p.x += p.vx * dt * 60; p.y += p.vy * dt * 60;
+      if (p.y > car.y1) { p.y = car.y1; p.vy *= -.2; p.vx *= .5; p.life *= .6; }
+      c.strokeStyle = p.mud ? `rgba(110,88,60,${p.life * .8})` : `rgba(210,232,255,${p.life * .6})`;
+      c.lineWidth = Math.max(1, 1.8 * px); c.lineCap = 'round';
+      c.beginPath(); c.moveTo(sx, sy); c.lineTo(sx - p.vx * s * 1.4, sy - p.vy * s * 1.4); c.stroke();
+    } else if (p.k === 'streak') { // hilo que viaja por la parábola del chorro
+      if (!jet) { parts.splice(i, 1); continue; }
+      p.q += p.spd * dt * 60 * (ch * .02) / Math.max(jet.len, 1); if (p.q >= 1) { parts.splice(i, 1); continue; }
+      const [ax, ay] = jet.at(p.q), [bx, by] = jet.at(Math.max(0, p.q - .05)), w = (ch * .009) * (1 - p.q) + 2 * px, off = p.side * w * 1.2;
+      c.strokeStyle = `rgba(235,247,255,${.18 + .25 * (1 - p.q)})`; c.lineWidth = Math.max(1, w * .35); c.lineCap = 'round';
+      c.beginPath(); c.moveTo(bx + off, by); c.lineTo(ax + off, ay); c.stroke();
+    } else if (p.k === 'mist') {
+      p.r += .7 * U * dt * 60; p.y -= .15 * U * dt * 60; c.fillStyle = `rgba(200,225,255,${p.life * .05})`;
+      c.beginPath(); c.arc(sx, sy, p.r * s, 0, Math.PI * 2); c.fill();
+    } else if (p.k === 'run') { // gota que resbala por la pintura; al salir por abajo, cae
+      p.vy += .02 * U * dt * 60; p.y += p.vy * dt * 60;
+      if (!onCar(p.x, p.y)) { p.life = 0; if (p.y > car.y0 + (car.y1 - car.y0) * .5) spawn({ k: 'drop', x: p.x, y: p.y, vx: (Math.random() - .5) * .4 * U, vy: p.vy, life: 1, dec: .02 }); }
+      c.fillStyle = `rgba(220,238,255,${p.life * .7})`;
+      c.beginPath(); c.ellipse(sx, sy, 1.5 * px + .6, 3 * px + .8, 0, 0, Math.PI * 2); c.fill();
+    } else if (p.k === 'spark') { // destellos del agua al sol de los focos
+      const r = (1 - Math.abs(p.life - .5) * 2) * 7 * px + 1;
+      c.strokeStyle = `rgba(235,246,255,${p.life})`; c.lineWidth = 1.2;
+      c.beginPath(); c.moveTo(sx - r, sy); c.lineTo(sx + r, sy); c.moveTo(sx, sy - r); c.lineTo(sx, sy + r); c.stroke();
+    }
+  }
+}
+
+// el chorro en primera persona: sale recto de la boquilla y cae por su peso hasta el impacto; grueso cerca (está junto a la cámara),
+// fino lejos, translúcido y suave, sin bordes duros
+function drawJet(now) {
+  const c = fx, px = s * U, pt = jet.at, w0 = ch * 0.011, w1 = 3 * px + 1.5, N = 16, t = now / 60;
+  const poly = (scale, fill) => { // polígono que se estrecha a lo largo de la parábola
+    c.fillStyle = fill; c.beginPath();
+    const L = [], R = [];
+    for (let i = 0; i <= N; i++) { const q = i / N, [x, y] = pt(q), [x2, y2] = pt(Math.min(1, q + .01)), dx = x2 - x, dy = y2 - y, d = Math.hypot(dx, dy) || 1, w = (w0 + (w1 - w0) * q) * scale + Math.sin(t + i * 1.1) * (1 - q) * .8; L.push([x - dy / d * w, y + dx / d * w]); R.push([x + dy / d * w, y - dx / d * w]); }
+    L.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); R.reverse().forEach(([x, y]) => c.lineTo(x, y)); c.closePath(); c.fill();
+  };
+  c.save(); c.globalCompositeOperation = 'lighter';
+  poly(2.6, 'rgba(120,170,255,.05)');            // bruma alrededor
+  poly(1.4, 'rgba(170,205,255,.12)');            // vaho
+  poly(1.0, 'rgba(205,230,255,.28)');            // agua
+  poly(0.45, 'rgba(240,248,255,.42)');           // núcleo
+  // impacto: resplandor suave y una corona de agua que se abre
+  const [hx, hy] = pt(1), R = 24 * px + 6, sp = c.createRadialGradient(hx, hy, 0, hx, hy, R);
+  sp.addColorStop(0, 'rgba(240,248,255,.45)'); sp.addColorStop(.5, 'rgba(210,232,255,.16)'); sp.addColorStop(1, 'rgba(210,232,255,0)');
+  c.fillStyle = sp; c.beginPath(); c.arc(hx, hy, R, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = 'rgba(235,246,255,.3)'; c.lineWidth = 1.2; c.beginPath(); c.ellipse(hx, hy, R * (.5 + Math.sin(t * 2) * .06), R * .24, 0, 0, Math.PI * 2); c.stroke();
+  // vaho junto a la boquilla
+  for (let i = 0; i < 3; i++) { const q = .03 + i * .04, [x, y] = pt(q); c.fillStyle = `rgba(220,236,255,${.07 - i * .018})`; c.beginPath(); c.arc(x + (Math.random() - .5) * w0 * .6, y + (Math.random() - .5) * w0 * .6, w0 * (1.1 + i * .5), 0, Math.PI * 2); c.fill(); }
+  c.restore();
+}
+// un ligero aire de sueño: dos luces difusas que derivan muy despacio sobre la escena
+function drawDream(now) {
+  const t = now / 1000, c = fx; c.save(); c.globalCompositeOperation = 'lighter';
+  for (const [x, y, r, a] of [[cw * (.5 + .3 * Math.sin(t * .11)), ch * (.32 + .1 * Math.cos(t * .07)), cw * .9, .045], [cw * (.5 + .35 * Math.cos(t * .09 + 2)), ch * (.66 + .12 * Math.sin(t * .13)), cw * .7, .035]]) {
+    const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(160,195,255,${a})`); g.addColorStop(1, 'rgba(160,195,255,0)'); c.fillStyle = g; c.fillRect(0, 0, cw, ch);
+  }
+  c.restore();
+}
+
+let last = 0;
+function frame_(now) {
+  const dt = Math.min(.05, (now - (last || now)) / 1000); last = now;
+  const on = state === 'play' && spraying && !!aim;
+  const g = aim ? poseGun(aim, on, dt, now) : null;
+  // el agua golpea exactamente donde apuntas (si el dedo está encima de la boquilla, un poco por delante de ella)
+  let hitS = null;
+  if (aim && g) { const dx = aim[0] - g.tip[0], dy = aim[1] - g.tip[1], d = Math.hypot(dx, dy); hitS = d < ch * .03 ? [g.tip[0] + g.dir[0] * ch * .03, g.tip[1] + g.dir[1] * ch * .03] : aim; }
+  jet = on ? makeJet(g, hitS) : null;
+  if (on) {
+    const [ix, iy] = toImg(hitS[0], hitS[1]);
+    if (!t0) t0 = now;
+    spray(ix, iy, dt); streaks(); compose();
+    if (now - lastProbe > 180) { // progreso
+      lastProbe = now; clean = Math.max(clean, 1 - dirtLeft() / baseline);
+      const pct = Math.min(100, Math.round(clean / .94 * 100)); // al 94 % real ya se ve impecable
+      pctEl.textContent = pct + '%'; fillEl.style.width = pct + '%';
+      if (pct >= 100) win(now);
+    }
+  }
+  if (state === 'play' && t0) { elapsed = (now - t0) / 1000; timeEl.textContent = elapsed.toFixed(1) + 's'; }
+  if (state === 'win' && Math.random() < .4) { // destellos sobre la pintura limpia
+    const x = car.x0 + Math.random() * (car.x1 - car.x0), y = car.y0 + Math.random() * (car.y1 - car.y0);
+    if (onCar(x, y)) spawn({ k: 'spark', x, y, life: 1, dec: .03 });
+  }
+  drawScene(now);
+  fx.setTransform(dpr, 0, 0, dpr, 0, 0); fx.clearRect(0, 0, cw, ch);
+  drawDream(now); drawParts(dt);
+  if (state !== 'start' && g) {
+    if (on) drawJet(now);
+    else if (matchMedia('(hover: hover)').matches) { // mira con el ratón, donde caerá el agua
+      fx.strokeStyle = 'rgba(125,182,255,.8)'; fx.lineWidth = 1.5;
+      fx.beginPath(); fx.arc(hitS[0], hitS[1], 14, 0, Math.PI * 2); fx.moveTo(hitS[0] - 22, hitS[1]); fx.lineTo(hitS[0] - 7, hitS[1]); fx.moveTo(hitS[0] + 7, hitS[1]); fx.lineTo(hitS[0] + 22, hitS[1]); fx.stroke();
+    }
+  }
+  renderer.render(gscene, gcam);
+  raf = requestAnimationFrame(frame_);
+}
+
+function win(now) {
+  state = 'win'; winAt = now; spraying = false;
+  dctx.globalCompositeOperation = 'source-over'; dctx.clearRect(0, 0, IMG.w, IMG.h); compose(); // lo que quede, fuera
+  pctEl.textContent = '100%'; fillEl.style.width = '100%';
+  let best = Infinity; try { best = +localStorage.getItem('mdga-wash-best') || Infinity; } catch {}
+  const record = elapsed < best; if (record) try { localStorage.setItem('mdga-wash-best', elapsed.toFixed(1)); } catch {}
+  document.getElementById('final').textContent = elapsed.toFixed(1) + 's';
+  document.getElementById('best').textContent = record ? 'New best time!' : `Best: ${best.toFixed(1)}s`;
+  setTimeout(() => { winPanel.hidden = false; }, 1300);
+}
+
+// ---------- controles (coordenadas dentro del marco vertical) ----------
+// con el dedo el agua cae un poco por encima, para que el dedo no tape el punto de impacto
+const pos = (e) => { const r = frame.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top - (e.pointerType === 'touch' ? ch * .07 : 0)]; };
+frame.addEventListener('pointerdown', (e) => { if (state !== 'play' || e.target.closest('.card,.icon')) return; frame.setPointerCapture(e.pointerId); aim = pos(e); spraying = true; hint.style.opacity = 0; });
+frame.addEventListener('pointermove', (e) => { aim = pos(e); });
+const stop = () => { spraying = false; };
+frame.addEventListener('pointerup', stop); frame.addEventListener('pointercancel', stop);
+
+async function open() {
+  game.hidden = false; game.classList.add('on'); document.body.style.overflow = 'hidden';
+  await ready; fit(); if (!LS) await makeLayers(); reset(); state = 'start'; startPanel.hidden = false; winPanel.hidden = true;
+  aim = [cw * .5, ch * .5]; last = 0; cancelAnimationFrame(raf); raf = requestAnimationFrame(frame_);
+}
+function close() { cancelAnimationFrame(raf); stop(); if (history.length > 1) history.back(); else location.href = './'; }
+open();
+document.getElementById('close').addEventListener('click', close);
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && !game.hidden) close(); });
+document.getElementById('start').addEventListener('click', () => { startPanel.hidden = true; state = 'play'; });
+document.getElementById('again').addEventListener('click', () => { reset(); winPanel.hidden = true; state = 'play'; });
+addEventListener('resize', () => { if (!game.hidden) fit(); });
+</script>
+</body>
+</html>
