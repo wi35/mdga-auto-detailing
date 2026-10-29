@@ -154,7 +154,11 @@ nav a:hover{color:var(--ink)}
 .work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .shot{position:relative;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;border:1px dashed rgba(125,182,255,.3);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#7f8aa0;
   background:linear-gradient(110deg,rgba(255,255,255,.02) 30%,rgba(125,182,255,.08) 50%,rgba(255,255,255,.02) 70%) 0 0/300% 100%;animation:shine 3.5s linear infinite}
-.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+/* con foto: vertical (las fotos de los trabajos son de móvil), borde normal y sin el brillo de "Coming soon" */
+.shot:has(img){aspect-ratio:4/5;border-style:solid;border-color:var(--line);background:var(--card);animation:none}
+.shot:hover img{transform:scale(1.05)}
+.shot[data-open-work]{cursor:pointer}
 
 /* llamada final */
 .cta-box{position:relative;overflow:hidden;text-align:center;padding:clamp(40px,7vw,80px) clamp(20px,5vw,72px);border-radius:28px;border:1px solid var(--line);background:radial-gradient(120% 140% at 50% 0%,rgba(47,123,255,.22),transparent 60%),linear-gradient(160deg,var(--card2),var(--card))}
@@ -219,6 +223,7 @@ body:has(#work[open]){overflow:hidden}
   .groups,.groups.three{grid-template-columns:1fr}
   .why{grid-template-columns:1fr}
   .work-grid{grid-template-columns:1fr 1fr;gap:10px}
+  #gallery .shot:nth-child(3){display:none} /* en dos columnas, la vista previa muestra dos fotos para que ninguna quede sola */
   .foot{grid-template-columns:1fr}
   .ctas .btn{flex:1 1 auto}
   #work{padding:20px}
@@ -358,11 +363,13 @@ body:has(#work[open]){overflow:hidden}
   <section id="gallery">
     <div class="wrap">
       <div class="head rv">
-        <div><span class="eyebrow">Our Work</span><h2>Real Results from Real <span class="hl">MDGA</span> Jobs.</h2><p class="lead">Before &amp; after photos of vehicles we have detailed.</p></div>
+        <div><span class="eyebrow">Our Work</span><h2>Real Results from Real <span class="hl">MDGA</span> Jobs.</h2><p class="lead">Photos from vehicles we have detailed.</p></div>
         <button class="btn ghost" type="button" data-open-work>See All Our Work</button>
       </div>
       <div class="work-grid">
-        <figure class="shot rv">Coming soon</figure><figure class="shot rv" style="--d:1">Coming soon</figure><figure class="shot rv" style="--d:2">Coming soon</figure>
+        <figure class="shot rv" data-open-work><img src="fotos/porsche-cayenne.jpg" width="962" height="1500" alt="White Porsche Cayenne after a full MDGA detail" loading="lazy"></figure>
+        <figure class="shot rv" style="--d:1" data-open-work><img src="fotos/ferrari-roma-interior.jpg" width="1086" height="1448" alt="Spotless tan leather interior of a Ferrari Roma" loading="lazy"></figure>
+        <figure class="shot rv" style="--d:2" data-open-work><img src="fotos/acura-integra-foam.jpg" width="910" height="1500" alt="Black Acura Integra covered in snow foam during a wash" loading="lazy"></figure>
       </div>
     </div>
   </section>
@@ -413,8 +420,19 @@ body:has(#work[open]){overflow:hidden}
     <button class="close" type="button" aria-label="Close">×</button>
   </div>
   <div class="work-grid">
-    <figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure>
-    <figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure><figure class="shot">Coming soon</figure>
+    <figure class="shot"><img src="fotos/porsche-cayenne.jpg" width="962" height="1500" alt="White Porsche Cayenne after a full MDGA detail" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/ferrari-roma-interior.jpg" width="1086" height="1448" alt="Spotless tan leather interior of a Ferrari Roma" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/acura-integra-foam.jpg" width="910" height="1500" alt="Black Acura Integra covered in snow foam during a wash" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/bmw-x5.jpg" width="690" height="1500" alt="White BMW X5 shining on a brick driveway" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/bmw-x5-interior.jpg" width="1000" height="1500" alt="Clean cognac leather interior of a BMW X5" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/ferrari-roma-wheel.jpg" width="690" height="1500" alt="Ferrari wheel with yellow calipers and mirror-gloss black paint" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/ferrari-wheel-cleaning.jpg" width="1037" height="1245" alt="MDGA detailer cleaning a Ferrari wheel" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/toyota-tundra.jpg" width="906" height="1500" alt="Silver Toyota Tundra after a detail" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/ford-super-duty-foam.jpg" width="822" height="1500" alt="MDGA detailer foaming a Ford Super Duty pickup" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/honda-foam.jpg" width="834" height="1500" alt="MDGA detailer rinsing snow foam off a Honda" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/mercedes-wheel.jpg" width="1082" height="1454" alt="Clean Mercedes-Benz wheel and glossy black paint" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/porsche-wheel.jpg" width="874" height="1500" alt="Porsche wheel and tire with a fresh tire shine" loading="lazy"></figure>
+    <figure class="shot"><img src="fotos/tundra-tire-shine.jpg" width="998" height="1500" alt="Toyota Tundra off-road tire with tire shine" loading="lazy"></figure>
   </div>
 </dialog>
 
