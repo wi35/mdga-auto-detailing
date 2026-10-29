@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /wash.html
+Sitemap: https://mdgaautodetailing.com/sitemap.xml
